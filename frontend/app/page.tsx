@@ -4,6 +4,7 @@ import SearchBar from '@/components/ui/SearchBar'
 import { formatFee, getAvatarUrl } from '@/lib/utils'
 import Image from 'next/image'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
+import HuntlyHero from '@/components/home/Hero'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -77,123 +78,8 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════════
             HERO
         ══════════════════════════════════════════ */}
-        <section style={{
-          background: 'linear-gradient(160deg, #B02060 0%, #D25380 45%, #E08E6D 100%)',
-          position: 'relative',
-          overflow: 'hidden',
-          paddingTop: 140,
-          paddingBottom: 120,
-          // Fix: force navbar text visible by giving hero a strong background
-          // Navbar text problem is from globals.css — add here as documentation
-        }}>
-          {/* Mesh blobs */}
-          <div style={{ position:'absolute', inset:0, pointerEvents:'none',
-            background:'radial-gradient(ellipse 65% 70% at 95% 5%, rgba(246,195,145,0.3) 0%, transparent 55%), radial-gradient(ellipse 55% 60% at 5% 95%, rgba(176,32,96,0.25) 0%, transparent 55%)' }}/>
-
-          {/* Dot grid */}
-          <div style={{ position:'absolute', inset:0, pointerEvents:'none',
-            backgroundImage:'radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)',
-            backgroundSize:'32px 32px' }}/>
-
-          {/* Animated orbiting dots — decorative circle in top-right */}
-          <div style={{ position:'absolute', right:80, top:100, width:180, height:180, pointerEvents:'none' }}>
-            <div style={{ position:'absolute', inset:0, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.1)' }}/>
-            <div style={{ position:'absolute', inset:24, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.07)' }}/>
-            <div style={{ position:'absolute', inset:48, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.06)' }}/>
-            <div className="orb-wrap"><div className="orb1"/></div>
-            <div className="orb-wrap"><div className="orb2"/></div>
-            <div className="orb-wrap"><div className="orb3"/></div>
-          </div>
-
-          <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 40px', position:'relative', zIndex:1 }}>
-            <div style={{ maxWidth:640 }}>
-
-              {/* Eyebrow */}
-              <div className="fu1" style={{ display:'inline-flex', alignItems:'center', gap:8,
-                background:'rgba(255,255,255,0.12)', border:'1px solid rgba(255,255,255,0.2)',
-                borderRadius:100, padding:'7px 18px', marginBottom:28 }}>
-                <span style={{ width:6, height:6, borderRadius:'50%', background:'#F6C391', animation:'pulse-dot 2s ease infinite', display:'block' }}/>
-                <span style={{ fontSize:11, fontWeight:600, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.8)' }}>
-                  India's Most Trusted Doctor Directory
-                </span>
-              </div>
-
-              {/* H1 */}
-              <h1 className="fu2" style={{ fontFamily:'var(--font-cormorant),serif',
-                fontSize:'clamp(44px,7vw,78px)', fontWeight:600, lineHeight:1.05,
-                color:'#fff', marginBottom:20, letterSpacing:'-0.01em' }}>
-                Find the Best<br/>
-                <em style={{ fontStyle:'italic', color:'#F6C391' }}>Doctors</em> Near You
-              </h1>
-
-              <p className="fu3" style={{ fontSize:16, fontWeight:300, color:'rgba(255,255,255,0.65)',
-                maxWidth:480, lineHeight:1.75, marginBottom:36 }}>
-                Discover top-rated specialists, read verified patient reviews, compare fees and book appointments — all in one seamless experience.
-              </p>
-
-              {/* Search wrapper */}
-              <div className="fu4" style={{
-                background:'rgba(255,255,255,0.12)',
-                border:'1px solid rgba(255,255,255,0.22)',
-                borderRadius:18,
-                padding:6,
-                marginBottom:20,
-                backdropFilter:'blur(12px)',
-                boxShadow:'0 8px 32px rgba(0,0,0,0.12)',
-              }}>
-                <SearchBar />
-              </div>
-
-              {/* Quick pills */}
-              <div className="fu4" style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                {['Dermatologist','Cardiologist','Dentist','Orthopedist'].map(s => (
-                  <Link key={s} href={`/doctors?specialization=${s.toLowerCase()}`}
-                    className="spec-pill"
-                    style={{ fontSize:12, fontWeight:500, padding:'6px 14px', borderRadius:100,
-                      background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)',
-                      color:'rgba(255,255,255,0.75)', textDecoration:'none', transition:'all .2s', letterSpacing:'0.02em' }}>
-                    {s}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Floating doctor card */}
-          {doctors[0] && (
-            <div className="float-card" style={{
-              position:'absolute', right:52, top:'50%', transform:'translateY(-50%)',
-              width:220, background:'rgba(255,255,255,0.12)',
-              backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
-              border:'1px solid rgba(255,255,255,0.2)',
-              borderRadius:20, padding:20,
-              boxShadow:'0 20px 60px rgba(0,0,0,0.2)',
-              display:'none', // hidden mobile — shown via media query workaround
-            }}>
-              <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:'#F6C391', marginBottom:12 }}>★ Top Rated</div>
-              <div style={{ display:'flex', gap:12, alignItems:'center', marginBottom:14 }}>
-                <Image src={getAvatarUrl(doctors[0].name)} alt="" width={42} height={42}
-                  style={{ borderRadius:10, border:'1.5px solid rgba(255,255,255,0.25)' }} unoptimized/>
-                <div>
-                  <div style={{ fontSize:13, fontWeight:600, color:'#fff', lineHeight:1.2 }}>{doctors[0].name}</div>
-                  <div style={{ fontSize:11, color:'rgba(255,255,255,0.5)', marginTop:2 }}>{doctors[0].specializations?.[0]?.name||'Specialist'}</div>
-                </div>
-              </div>
-              <div style={{ color:'#F6C391', fontSize:13, letterSpacing:2 }}>★★★★★</div>
-              <div style={{ fontSize:17, fontWeight:700, color:'#fff', marginTop:10, fontFamily:'var(--font-cormorant),serif' }}>
-                {doctors[0].consultationFee ? formatFee(doctors[0].consultationFee) : 'Consult for fee'}
-              </div>
-              <div style={{ fontSize:10, color:'rgba(255,255,255,0.45)', marginTop:3 }}>Available Today</div>
-            </div>
-          )}
-
-          {/* Bottom wave */}
-          <div style={{ position:'absolute', bottom:-1, left:0, right:0 }}>
-            <svg viewBox="0 0 1440 56" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ width:'100%', height:56, display:'block' }}>
-              <path d="M0 56V28C240 0 480 0 720 28C960 56 1200 56 1440 28V56H0Z" fill="#FFFAF4"/>
-            </svg>
-          </div>
-        </section>
+       <HuntlyHero doctors={doctors} />
+ 
 
         {/* ══════════════════════════════════════════
             STATS STRIP

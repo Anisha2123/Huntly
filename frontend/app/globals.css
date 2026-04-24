@@ -214,3 +214,100 @@ h1, h2, h3, .font-display {
 .fsc { scrollbar-width: thin; scrollbar-color: rgba(210,83,128,0.2) transparent; }
 .fsc::-webkit-scrollbar { width: 3px; }
 .fsc::-webkit-scrollbar-thumb { background: rgba(210,83,128,0.2); border-radius: 2px; }
+
+
+@keyframes h-rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes h-rule {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes h-bob {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-7px) rotate(.3deg); }
+  66%       { transform: translateY(-3px) rotate(-.2deg); }
+}
+@keyframes h-bob2 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+@keyframes h-orbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes h-orbit-rev {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes h-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .35; transform: scale(.65); }
+}
+@keyframes h-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes h-ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes h-glow-pulse {
+  0%, 100% { opacity: .55; }
+  50%       { opacity: .85; }
+}
+
+.h-r1 { animation: h-rise .72s cubic-bezier(.16,1,.3,1) .04s both; }
+.h-r2 { animation: h-rise .72s cubic-bezier(.16,1,.3,1) .16s both; }
+.h-r3 { animation: h-rise .72s cubic-bezier(.16,1,.3,1) .28s both; }
+.h-r4 { animation: h-rise .72s cubic-bezier(.16,1,.3,1) .40s both; }
+.h-r5 { animation: h-rise .72s cubic-bezier(.16,1,.3,1) .52s both; }
+.h-r6 { animation: h-rise .72s cubic-bezier(.16,1,.3,1) .64s both; }
+
+.h-rule-anim {
+  animation: h-rule .9s cubic-bezier(.16,1,.3,1) .28s both;
+  transform-origin: left;
+}
+.h-bob        { animation: h-bob  8s ease-in-out infinite; }
+.h-bob2       { animation: h-bob2 9s ease-in-out 1.5s infinite; }
+.h-bob3       { animation: h-bob2 11s ease-in-out 3s infinite; }
+.h-orbit      { animation: h-orbit     26s linear infinite; }
+.h-orbit-rev  { animation: h-orbit-rev 18s linear infinite; }
+.h-dot        { animation: h-dot  2.4s ease-in-out infinite; }
+.h-ticker-inner { animation: h-ticker 32s linear infinite; }
+.h-glow-pulse { animation: h-glow-pulse 4s ease-in-out infinite; }
+
+.h-headline-grad {
+  background: linear-gradient(135deg, #D25380 0%, #E08E6D 40%, #F6C391 60%, #D25380 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: background-position .6s ease;
+}
+.h-headline-grad:hover {
+  animation: h-shimmer 1.8s linear infinite;
+}
+
+.h-pill-hover:hover {
+  background: rgba(210,83,128,0.08) !important;
+  border-color: rgba(210,83,128,0.3) !important;
+  color: #D25380 !important;
+  transform: translateY(-1px);
+}
+
+/* card hover — only shadow+lift, NO transform (bob handles movement) */
+.h-card-link {
+  display: block;
+  text-decoration: none;
+  transition: box-shadow .3s ease, filter .3s ease;
+}
+.h-card-link:hover {
+  box-shadow: 0 24px 64px rgba(210,83,128,0.18) !important;
+  filter: brightness(1.01);
+}
+
+.h-search-wrap input { color: #2A1520 !important; }
+.h-search-wrap input::placeholder { color: rgba(122,58,80,0.38) !important; }
+

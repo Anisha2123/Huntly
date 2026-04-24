@@ -291,7 +291,7 @@ function DoctorsPageInner() {
 
   useEffect(() => {
     setLoading(true)
-    doctorsApi.list({ ...filters, page, limit:12 })
+    doctorsApi.list({ ...filters, page, limit:3 })
       .then(r=>{ setDoctors(r.data.doctors||[]); setTotal(r.data.total||0); setPages(r.data.pages||1) })
       .catch(()=>toast.error('Failed to load doctors'))
       .finally(()=>setLoading(false))
