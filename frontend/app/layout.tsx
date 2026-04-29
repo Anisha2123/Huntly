@@ -11,6 +11,8 @@ const cormorant = Cormorant_Garamond({
   style: ['normal', 'italic'],
   variable: '--font-cormorant',
   display: 'swap',
+  fallback: ['Georgia', 'serif'],
+  adjustFontFallback: true,
 })
 
 const dmSans = DM_Sans({
@@ -18,6 +20,8 @@ const dmSans = DM_Sans({
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-dm-sans',
   display: 'swap',
+  fallback: ['system-ui', 'sans-serif'],
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
