@@ -10,7 +10,7 @@ const api = axios.create({
 // Attach token
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('medlist_token')
+    const token = localStorage.getItem('Huntly_token')
     if (token) config.headers.Authorization = `Bearer ${token}`
   }
   return config
@@ -21,8 +21,8 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401 && typeof window !== 'undefined') {
-      localStorage.removeItem('medlist_token')
-      localStorage.removeItem('medlist_user')
+      localStorage.removeItem('Huntly_token')
+      localStorage.removeItem('Huntly_user')
     }
     return Promise.reject(err)
   }

@@ -95,7 +95,7 @@ export default function RegisterPage() {
     try {
       const r = await authApi.verifyOtp({ email: form.email, otp: code })
       setAuth(r.data.user, r.data.token)
-      toast.success(`Welcome to MedList, ${r.data.user.name.split(' ')[0]}!`)
+      toast.success(`Welcome to Huntly, ${r.data.user.name.split(' ')[0]}!`)
       router.push('/')
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Invalid or expired OTP')
@@ -135,7 +135,7 @@ export default function RegisterPage() {
 
           <h2 className="text-4xl font-semibold leading-tight mb-3 text-[#D25380]"
             style={{ fontFamily:'var(--font-playfair)' }}>
-            Join<br /><em className="italic">MedList</em>
+            Join<br /><em className="italic">Huntly</em>
           </h2>
           <p className="text-[#7A4A58] mb-8 leading-relaxed text-[15px] font-light">
             Create a free account and take control of your healthcare journey.

@@ -41,7 +41,7 @@ export default function LoginPage() {
               <span className="font-display text-2xl font-bold text-primary-500">M</span>
             </div>
             <h1 className="font-display text-3xl font-semibold text-gray-900 mb-1">Welcome back</h1>
-            <p className="text-gray-400 text-sm">Sign in to your MedList account</p>
+            <p className="text-gray-400 text-sm">Sign in to your Huntly account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -94,7 +94,7 @@ export default function LoginPage() {
           <div className="mt-4 p-3 rounded-xl bg-gray-50 border border-gray-100">
             <p className="text-xs text-gray-400 font-medium mb-1">Demo credentials:</p>
             <p className="text-xs text-gray-500">Patient: <code className="bg-white px-1 rounded text-primary-600">rahul@test.com</code> / <code className="bg-white px-1 rounded text-primary-600">test123</code></p>
-            <p className="text-xs text-gray-500 mt-0.5">Admin: <code className="bg-white px-1 rounded text-primary-600">admin@medlist.com</code> / <code className="bg-white px-1 rounded text-primary-600">admin123</code></p>
+            <p className="text-xs text-gray-500 mt-0.5">Admin: <code className="bg-white px-1 rounded text-primary-600">admin@Huntly.com</code> / <code className="bg-white px-1 rounded text-primary-600">admin123</code></p>
           </div>
         </div>
       </div>

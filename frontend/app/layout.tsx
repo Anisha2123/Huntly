@@ -22,13 +22,13 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: 'MedList — Find the Best Doctors Near You',
-    template: '%s | MedList',
+    default: 'Huntly — Find the Best Doctors Near You',
+    template: '%s | Huntly',
   },
   description: 'Discover top-rated doctors, specialists and clinics. Read verified reviews, compare fees, and book appointments instantly.',
   keywords: ['doctors', 'specialists', 'clinics', 'healthcare', 'medical', 'appointments', 'best doctors'],
   openGraph: {
-    title: 'MedList — Find the Best Doctors Near You',
+    title: 'Huntly — Find the Best Doctors Near You',
     description: 'Discover top-rated doctors and book appointments instantly.',
     type: 'website',
   },

@@ -25,7 +25,7 @@ const sendOtpEmail = async (email, otp, name) => {
   const response = await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: "noirsevendigitalsolutions@gmail.com",
-      subject: `${otp} — Your MedList verification code`,
+      subject: `${otp} — Your Huntly verification code`,
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#FFFAF4;border-radius:16px">
         <div style="width:44px;height:44px;background:#D25380;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px">

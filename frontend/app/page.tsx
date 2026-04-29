@@ -5,6 +5,9 @@ import { formatFee, getAvatarUrl } from '@/lib/utils'
 import Image from 'next/image'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import HuntlyHero from '@/components/home/Hero'
+import HowItWorks from '@/components/home/HowitWorks'
+import WhyChooseUs from '@/components/home/WhyChooseUs'
+import FeaturedDoctors from '@/components/home/FeaturedDoctors'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -160,193 +163,21 @@ export default async function HomePage() {
         {/* ══════════════════════════════════════════
             FEATURED DOCTORS
         ══════════════════════════════════════════ */}
-        {doctors.length>0 && (
-          <section style={{ padding:'96px 0', background:'#fff' }}>
-            <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 40px' }}>
-              <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:48 }}>
-                <div>
-                  <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.14em', textTransform:'uppercase', color:'#E08E6D', marginBottom:10 }}>Hand-Picked</p>
-                  <h2 style={{ fontFamily:'var(--font-cormorant),serif', fontSize:'clamp(28px,4vw,40px)',
-                    fontWeight:600, color:'#2C1018', lineHeight:1.15, margin:0 }}>
-                    Featured <em style={{ fontStyle:'italic', color:'#D25380' }}>Doctors</em>
-                  </h2>
-                </div>
-                <Link href="/doctors?isFeatured=true" style={{ display:'inline-flex', alignItems:'center', gap:6,
-                  fontSize:13, fontWeight:500, color:'#D25380', textDecoration:'none' }}>
-                  See All <ChevronRight size={14}/>
-                </Link>
-              </div>
-
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:20 }}>
-                {doctors.slice(0,4).map((doc:any) => (
-                  <Link key={doc._id} href={`/doctors/${doc.slug}`} className="lift"
-                    style={{ background:'#fff', borderRadius:20, overflow:'hidden',
-                      border:'1px solid rgba(210,83,128,0.1)', textDecoration:'none', display:'block',
-                      boxShadow:'0 4px 20px rgba(160,60,80,0.1), 0 1px 4px rgba(160,60,80,0.06)' }}>
-                    {/* Gradient top */}
-                    <div style={{ position:'relative', padding:24, background:'linear-gradient(135deg,#D25380 0%,#E08E6D 100%)' }}>
-                      <div style={{ position:'absolute', bottom:-1, left:0, right:0, height:20,
-                        background:'#fff', borderRadius:'20px 20px 0 0' }}/>
-                      <div style={{ display:'flex', gap:12, alignItems:'center', position:'relative', zIndex:1 }}>
-                        <Image src={doc.photo||getAvatarUrl(doc.name)} alt={doc.name} width={52} height={52}
-                          style={{ width:52, height:52, borderRadius:14, border:'2px solid rgba(255,255,255,0.3)', objectFit:'cover' }} unoptimized/>
-                        <div>
-                          <div style={{ fontFamily:'var(--font-cormorant),serif', fontSize:16, fontWeight:600,
-                            color:'#fff', lineHeight:1.2 }}>{doc.name}</div>
-                          <div style={{ fontSize:11, color:'rgba(255,255,255,0.6)', marginTop:2 }}>
-                            {doc.specializations?.[0]?.name||'Specialist'}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Body */}
-                    <div style={{ padding:'20px 24px 24px' }}>
-                      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
-                        <div style={{ display:'flex', alignItems:'center', gap:4 }}>
-                          <span style={{ color:'#F6C391', fontSize:13 }}>★</span>
-                          <span style={{ fontSize:14, fontWeight:700, color:'#2C1018',
-                            fontFamily:'var(--font-cormorant),serif' }}>{doc.averageRating?.toFixed(1)}</span>
-                          <span style={{ fontSize:11, color:'#7A3A50', marginLeft:2 }}>({doc.totalReviews})</span>
-                        </div>
-                        <div style={{ textAlign:'right' }}>
-                          <div style={{ fontSize:10, color:'#7A3A50', letterSpacing:'0.04em', textTransform:'uppercase' }}>Fee</div>
-                          <div style={{ fontSize:15, fontWeight:700, color:'#D25380',
-                            fontFamily:'var(--font-cormorant),serif' }}>
-                            {doc.consultationFee ? formatFee(doc.consultationFee) : '—'}
-                          </div>
-                        </div>
-                      </div>
-                      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between',
-                        paddingTop:14, borderTop:'1px solid rgba(246,195,145,0.3)' }}>
-                        <span style={{ fontSize:11, color:'#7A3A50' }}>{doc.primaryArea}, {doc.primaryCity}</span>
-                        <span style={{ display:'inline-flex', alignItems:'center', gap:4,
-                          fontSize:11, fontWeight:600, color:'#D25380' }}>View <ArrowUpRight size={12}/></span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+        <FeaturedDoctors doctors={doctors} />
 
         {/* Divider */}
         <div style={{ height:1, background:'linear-gradient(to right, transparent, rgba(210,83,128,0.12), transparent)' }}/>
 
         {/* ══════════════════════════════════════════
-            WHY MEDLIST
+            WHY Huntly
         ══════════════════════════════════════════ */}
-        <section style={{ padding:'96px 0', background:'#FFFAF4' }}>
-          <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 40px' }}>
-            <div style={{ textAlign:'center', maxWidth:520, margin:'0 auto 56px' }}>
-              <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.14em', textTransform:'uppercase',
-                color:'#E08E6D', marginBottom:10 }}>Why Choose Us</p>
-              <h2 style={{ fontFamily:'var(--font-cormorant),serif', fontSize:'clamp(28px,4vw,40px)',
-                fontWeight:600, color:'#2C1018', lineHeight:1.15, margin:'0 0 14px' }}>
-                Healthcare Made <em style={{ fontStyle:'italic', color:'#D25380' }}>Simple</em>
-              </h2>
-              <p style={{ fontSize:14, color:'#7A3A50', lineHeight:1.75, fontWeight:300, margin:0 }}>
-                We connect patients with the right doctors through a platform built on trust, transparency and ease.
-              </p>
-            </div>
-
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:16 }}>
-              {[
-                { icon:<Shield size={20} color="#D25380"/>,      title:'Verified Listings',    desc:'Every doctor is verified with valid registration and credentials.' },
-                { icon:<Star size={20} color="#D25380"/>,        title:'Genuine Reviews',      desc:'Reviews only from verified patients who have visited the doctor.' },
-                { icon:<Clock size={20} color="#D25380"/>,       title:'Book Instantly',       desc:'Confirm your appointment in under 60 seconds, online or at clinic.' },
-                { icon:<Stethoscope size={20} color="#D25380"/>, title:'30+ Specializations',  desc:'From general physicians to highly specialized surgeons.' },
-              ].map(({ icon, title, desc }) => (
-                <div key={title} className="lift" style={{
-                  background:'#fff',
-                  borderRadius:20,
-                  padding:32,
-                  border:'1px solid rgba(210,83,128,0.1)',
-                  boxShadow:'0 2px 16px rgba(160,60,80,0.08), 0 1px 4px rgba(160,60,80,0.05)',
-                }}>
-                  <div style={{ width:48, height:48, borderRadius:14, background:'rgba(246,195,145,0.2)',
-                    display:'flex', alignItems:'center', justifyContent:'center', marginBottom:20 }}>
-                    {icon}
-                  </div>
-                  <div style={{ fontFamily:'var(--font-cormorant),serif', fontSize:18, fontWeight:600,
-                    color:'#2C1018', marginBottom:8 }}>{title}</div>
-                  <p style={{ fontSize:13, color:'#7A3A50', lineHeight:1.7, fontWeight:300, margin:0 }}>{desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <WhyChooseUs />
 
         {/* ══════════════════════════════════════════
             HOW IT WORKS  ← FIXED: uses palette, not dark bg
         ══════════════════════════════════════════ */}
-        <section style={{
-          padding:'96px 0',
-          background:'linear-gradient(135deg, #D25380 0%, #C04070 50%, #E08E6D 100%)',
-          position:'relative',
-          overflow:'hidden',
-        }}>
-          {/* Texture */}
-          <div style={{ position:'absolute', inset:0, pointerEvents:'none',
-            backgroundImage:'radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)',
-            backgroundSize:'28px 28px' }}/>
-          {/* Blobs */}
-          <div style={{ position:'absolute', top:-200, right:-200, width:500, height:500, borderRadius:'50%', pointerEvents:'none',
-            background:'radial-gradient(circle, rgba(246,195,145,0.18) 0%, transparent 70%)' }}/>
-          <div style={{ position:'absolute', bottom:-100, left:-100, width:350, height:350, borderRadius:'50%', pointerEvents:'none',
-            background:'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)' }}/>
-
-          <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 40px', position:'relative', zIndex:1 }}>
-            <div style={{ textAlign:'center', maxWidth:500, margin:'0 auto 56px' }}>
-              <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.14em', textTransform:'uppercase',
-                color:'rgba(255,255,255,0.7)', marginBottom:10 }}>Simple Process</p>
-              <h2 style={{ fontFamily:'var(--font-cormorant),serif', fontSize:'clamp(28px,4vw,40px)',
-                fontWeight:600, color:'#fff', lineHeight:1.15, margin:'0 0 14px' }}>
-                How MedList <em style={{ fontStyle:'italic', color:'#F6C391' }}>Works</em>
-              </h2>
-              <p style={{ fontSize:14, color:'rgba(255,255,255,0.55)', fontWeight:300, margin:0 }}>
-                Find and book your doctor appointment in just three easy steps.
-              </p>
-            </div>
-
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 }}>
-              {[
-                { step:'01', emoji:'🔍', title:'Search & Filter',  desc:'Search by specialization, location or doctor name. Use smart filters to narrow down options.' },
-                { step:'02', emoji:'⭐', title:'Compare & Choose', desc:'Read genuine patient reviews, compare fees, check availability and pick the best match.' },
-                { step:'03', emoji:'📅', title:'Book Appointment', desc:'Choose a convenient slot, confirm your booking and receive instant confirmation.' },
-              ].map(({ step, emoji, title, desc }) => (
-                <div key={step} style={{
-                  background:'rgba(255,255,255,0.1)',
-                  border:'1px solid rgba(255,255,255,0.18)',
-                  borderRadius:20,
-                  padding:32,
-                  backdropFilter:'blur(8px)',
-                  boxShadow:'0 8px 32px rgba(0,0,0,0.1)',
-                }}>
-                  <div style={{ fontFamily:'var(--font-cormorant),serif', fontSize:56, fontWeight:700,
-                    color:'rgba(255,255,255,0.1)', lineHeight:1, marginBottom:16 }}>{step}</div>
-                  <span style={{ fontSize:28, marginBottom:14, display:'block' }}>{emoji}</span>
-                  <div style={{ fontFamily:'var(--font-cormorant),serif', fontSize:19, fontWeight:600,
-                    color:'#fff', marginBottom:8 }}>{title}</div>
-                  <p style={{ fontSize:13, color:'rgba(255,255,255,0.55)', lineHeight:1.7, fontWeight:300, margin:0 }}>{desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ textAlign:'center', marginTop:48 }}>
-              <Link href="/doctors" style={{
-                display:'inline-flex', alignItems:'center', gap:8,
-                background:'#FFFAF4', color:'#D25380',
-                fontSize:14, fontWeight:600, padding:'14px 32px',
-                borderRadius:100, textDecoration:'none', letterSpacing:'0.02em',
-                boxShadow:'0 8px 32px rgba(0,0,0,0.15)',
-                transition:'all .2s',
-              }}>
-                Find a Doctor Now <ArrowRight size={16}/>
-              </Link>
-            </div>
-          </div>
-        </section>
+        <HowItWorks />
+   
 
         {/* ══════════════════════════════════════════
             CTA
@@ -373,7 +204,7 @@ export default async function HomePage() {
                     Ready to find your<br/><em style={{ fontStyle:'italic', color:'#F6C391' }}>doctor?</em>
                   </h2>
                   <p style={{ fontSize:15, color:'rgba(255,255,255,0.6)', fontWeight:300, marginBottom:28, margin:'0 0 28px' }}>
-                    Join thousands of patients who trust MedList to connect them with the best healthcare professionals.
+                    Join thousands of patients who trust Huntly to connect them with the best healthcare professionals.
                   </p>
                   <div style={{ display:'flex', flexWrap:'wrap', gap:20, marginBottom:32 }}>
                     {['Verified Profiles','Instant Booking','Real Reviews','Free to Use'].map(t => (

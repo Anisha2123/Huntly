@@ -65,7 +65,7 @@ async function seed() {
   // Create admin user
   const admin = await User.create({
     name: 'Admin User',
-    email: 'admin@medlist.com',
+    email: 'admin@Huntly.com',
     password: 'admin123',
     role: 'admin'
   });
@@ -185,7 +185,7 @@ async function seed() {
   }
 
   console.log('🎉 Seed completed!');
-  console.log('📧 Admin: admin@medlist.com / admin123');
+  console.log('📧 Admin: admin@Huntly.com / admin123');
   console.log('📧 Patient: rahul@test.com / test123');
   process.exit(0);
 }

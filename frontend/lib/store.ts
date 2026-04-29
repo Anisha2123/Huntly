@@ -26,14 +26,14 @@ export const useAuthStore = create<AuthStore>()(
       isAuthenticated: false,
       setAuth: (user, token) => {
         if (typeof window !== 'undefined') {
-          localStorage.setItem('medlist_token', token)
+          localStorage.setItem('Huntly_token', token)
         }
         set({ user, token, isAuthenticated: true })
       },
       logout: () => {
         if (typeof window !== 'undefined') {
-          localStorage.removeItem('medlist_token')
-          localStorage.removeItem('medlist_user')
+          localStorage.removeItem('Huntly_token')
+          localStorage.removeItem('Huntly_user')
         }
         set({ user: null, token: null, isAuthenticated: false })
       },
@@ -42,7 +42,7 @@ export const useAuthStore = create<AuthStore>()(
       })),
     }),
     {
-      name: 'medlist_user',
+      name: 'Huntly_user',
       partialize: (state) => ({ user: state.user, token: state.token, isAuthenticated: state.isAuthenticated }),
     }
   )

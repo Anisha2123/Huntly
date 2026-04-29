@@ -1,4 +1,4 @@
-# MedList — Premium Doctor Directory Platform
+# Huntly — Premium Doctor Directory Platform
 
 A full-stack, production-ready doctor listing platform inspired by JustDial, built with **Next.js 14**, **Node.js/Express**, and **MongoDB**.
 
@@ -75,7 +75,7 @@ npm run dev
 ## Project Structure
 
 ```
-medlist/
+Huntly/
 ├── backend/
 │   ├── config/
 │   │   └── db.js                # MongoDB connection
@@ -201,7 +201,7 @@ medlist/
 ## Demo Credentials
 
 - **Patient:** `rahul@test.com` / `test123`
-- **Admin:** `admin@medlist.com` / `admin123`
+- **Admin:** `admin@Huntly.com` / `admin123`
 
 ---
 

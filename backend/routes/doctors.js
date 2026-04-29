@@ -10,7 +10,6 @@ const router = express.Router();
 // New query params: conditions, procedures, consultationMode, rank
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/', async (req, res) => {
-  console.log(`dr fetch api started`);
   try {
     const {
       search,
@@ -26,9 +25,8 @@ router.get('/', async (req, res) => {
       isFeatured,
       sortBy,
       page  = 1,
-      limit = 3
+      limit = 12
     } = req.query;
-    console.log(req.query);
 
     const query = { isActive: true };
 
@@ -41,11 +39,12 @@ router.get('/', async (req, res) => {
     if (city) query.primaryCity  = new RegExp(city, 'i');
     if (area) query.primaryArea  = new RegExp(area, 'i');
 
-    // ── Specialization (by slug) ────────────────────────────────────
+    // ── Specialization filter ───────────────────────────────────────
+    // doctor.specialization is a plain string e.g. "Dermatologist"
+    // slug from frontend is e.g. "dermatologist" — convert back to name
     if (specialization) {
-      const Category = require('../models/Category');
-      const cat = await Category.findOne({ slug: specialization });
-      if (cat) query.specializations = cat._id;
+      const nameFromSlug = specialization.replace(/-/g, ' ')
+      query.specialization = new RegExp(nameFromSlug, 'i')
     }
 
     // ── Conditions treated (ANY match) ─────────────────────────────

@@ -1,7 +1,7 @@
 {
-  "name": "medlist-backend",
+  "name": "Huntly-backend",
   "version": "1.0.0",
-  "description": "MedList Doctor Directory API",
+  "description": "Huntly Doctor Directory API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
