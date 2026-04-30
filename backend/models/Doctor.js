@@ -2,182 +2,134 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 
 const doctorSchema = new mongoose.Schema({
+
   name: {
     type: String,
-    required: [true, 'Doctor name is required'],
+    required: true,
     trim: true
   },
+
   slug: {
     type: String,
     unique: true
   },
 
-  // ── Qualifications & Experience ──────────────────────────────────
-  qualifications: [{
-    degree: String,
-    institution: String,
-    year: Number
-  }],
-  // Flat string for quick display  e.g. "MBBS, MD"
-  qualificationText: {
-    type: String,
-    trim: true
-  },
+  // ── Qualifications & Experience ───────────────────────────────
+  qualificationText: String,
+
   experience: {
     type: Number,
-    min: 0,
-    default: null   // nullable – not always known
-  },
-  registrationNumber: {
-    type: String,
-    unique: true,
-    sparse: true
-  },
-
-  // ── Specializations (refs to Category) ──────────────────────────
-  specializations: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category'
-  }],
-
-  // ── Clinical Details ─────────────────────────────────────────────
-  conditionsTreated: [String],   // e.g. ["Acne", "Pigmentation", "Hair Fall"]
-  proceduresOffered: [String],   // e.g. ["Chemical Peel", "Laser", "PRP"]
-
-  // ── Profile ──────────────────────────────────────────────────────
-  about: {
-    type: String,
-    maxlength: 2000
-  },
-  photo: {
-    type: String,
     default: null
   },
-  languages: [String],
 
-  // ── Clinics / Hospitals ──────────────────────────────────────────
-  clinics: [{
-    name: String,
-    address: String,
-    area: String,
-    city: String,
-    state: String,
-    pincode: String,
-    phone: String,
-    googleMapsLink: String,
-    timings: [{
-      day: String,
-      startTime: String,
-      endTime: String
-    }],
-    fees: Number,
-    isOnline: { type: Boolean, default: false }
-  }],
+  // ── Specializations (UPDATED) ─────────────────────────────────
+  specializations: [
+    {
+      name: String, // "Gynecology"
+      subSpecializations: [String] // ["PCOS", "IVF", "High-Risk Pregnancy"]
+    }
+  ],
 
-  // ── Primary location (denormalized for fast filtering) ───────────
+  // ── Conditions & Procedures ───────────────────────────────────
+  conditionsTreated: [String],
+  proceduresOffered: [String],
+
+  // ── Clinics / Hospitals (UPDATED) ─────────────────────────────
+  clinics: [
+    {
+      name: String,
+
+      address: String,
+      area: String,
+      city: String,
+      state: String,
+      pincode: String,
+
+      phone: String,
+
+      // Raw timing (IMPORTANT for UI display)
+      timingText: String,   // "Daily", "Mon–Sat 5–8 PM"
+
+      // Structured timing (optional future use)
+      timings: [
+        {
+          day: String,
+          startTime: String,
+          endTime: String
+        }
+      ],
+
+      consultationFee: Number,
+      feeText: String, // "₹700", "500-800"
+
+      googleMapsLink: String
+    }
+  ],
+
+  // ── Primary Location ──────────────────────────────────────────
   primaryCity: {
     type: String,
     default: 'Jaipur',
     index: true
   },
+
   primaryArea: String,
 
-  // ── Contact ──────────────────────────────────────────────────────
-  phone: String,
-  email: String,
-  website: String,
-  googleMapsLink: String,   // primary clinic maps link
+  // ── Contact ──────────────────────────────────────────────────
+  contact: {
+    phone: String,
+    email: String,
+    verified: { type: Boolean, default: false }
+  },
 
-  // ── Consultation Mode ────────────────────────────────────────────
-  // "Clinic" | "Online" | "Both"
+  // ── Consultation Mode ────────────────────────────────────────
   consultationMode: {
     type: String,
     enum: ['Clinic', 'Online', 'Both'],
     default: 'Clinic'
   },
 
-  // ── Fees ─────────────────────────────────────────────────────────
-  consultationFee: {
-    type: Number,
-    default: null   // nullable – sometimes missing
-  },
-  onlineFee: {
-    type: Number,
-    default: null
+  // ── Ratings (UPDATED) ────────────────────────────────────────
+  rating: {
+    value: Number,   // 4.9
+    count: Number,   // 500
+    text: String     // "4.9/5 | 500+ Reviews"
   },
 
-  // ── Services (generic / legacy) ──────────────────────────────────
-  services: [String],
+  // ── Ranking ──────────────────────────────────────────────────
+  rank: Number,
+  areaRank: Number,
 
-  // ── Equipment ────────────────────────────────────────────────────
-  equipment: [String],
-
-  // ── Availability ─────────────────────────────────────────────────
-  availableOnline: {
-    type: Boolean,
-    default: false
-  },
-  availableToday: {
-    type: Boolean,
-    default: false
+  // ── Raw Source Data (VERY IMPORTANT) ─────────────────────────
+  source: {
+    fullAddress: String,
+    rawHours: String,
+    rawFee: String,
+    rawRating: String,
+    rawReviews: String
   },
 
-  // ── Directory rank (Google rank / manual rank) ───────────────────
-  rank: {
-    type: Number,
-    default: null
-  },
-
-  // ── Aggregated stats (denormalized) ──────────────────────────────
-  averageRating: { type: Number, default: 0, min: 0, max: 5 },
-  totalReviews:  { type: Number, default: 0 },
-  totalBookings: { type: Number, default: 0 },
-
-  // ── Premium flags ────────────────────────────────────────────────
+  // ── Flags ────────────────────────────────────────────────────
   isFeatured: { type: Boolean, default: false },
-  isVerified:  { type: Boolean, default: false },
-  badge: {
-    type: String,
-    enum: ['Top Doctor', 'Highly Rated', 'Most Booked', null],
-    default: null
-  },
-  isActive: { type: Boolean, default: true },
-
-  // ── SEO ──────────────────────────────────────────────────────────
-  metaTitle: String,
-  metaDescription: String,
+  isActive: { type: Boolean, default: true }
 
 }, { timestamps: true });
 
-// ── Slug auto-generation ─────────────────────────────────────────
+
+// ── Slug ───────────────────────────────────────────────────────
 doctorSchema.pre('save', function (next) {
-  if (this.isModified('name') || this.isNew) {
+  if (this.isNew || this.isModified('name')) {
     this.slug = slugify(`${this.name}-${Date.now()}`, { lower: true });
-  }
-  // Keep availableOnline in sync with consultationMode
-  if (this.isModified('consultationMode')) {
-    this.availableOnline = ['Online', 'Both'].includes(this.consultationMode);
   }
   next();
 });
 
-// ── Indexes ──────────────────────────────────────────────────────
-doctorSchema.index({
-  name: 'text',
-  about: 'text',
-  qualificationText: 'text',
-  conditionsTreated: 'text',
-  proceduresOffered: 'text',
-  services: 'text'
-});
-doctorSchema.index({ primaryCity: 1, averageRating: -1 });
-doctorSchema.index({ primaryArea: 1 });
-doctorSchema.index({ specializations: 1 });
-doctorSchema.index({ consultationFee: 1 });
-doctorSchema.index({ rank: 1 });
-doctorSchema.index({ isFeatured: -1, averageRating: -1 });
-doctorSchema.index({ conditionsTreated: 1 });
-doctorSchema.index({ proceduresOffered: 1 });
-doctorSchema.index({ consultationMode: 1 });
+
+// ── Indexes ────────────────────────────────────────────────────
+doctorSchema.index({ name: 'text' });
+doctorSchema.index({ primaryCity: 1, primaryArea: 1 });
+doctorSchema.index({ "specializations.name": 1 });
+doctorSchema.index({ "specializations.subSpecializations": 1 });
+doctorSchema.index({ "rating.value": -1 });
 
 module.exports = mongoose.model('Doctor', doctorSchema);
