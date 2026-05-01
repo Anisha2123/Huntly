@@ -314,11 +314,11 @@ function DoctorsPageInner() {
     )
     console.group(`%c[DOCTORS:FETCH] page=${page}`, PINK)
     clog('FETCH', 'Active filters (excluding city=Jaipur):', activeFilters)
-    clog('FETCH', 'Full params sent to API:', { ...filters, page, limit:12 })
+    clog('FETCH', 'Full params sent to API:', { ...filters, page, limit:3 })
 
     setLoading(true)
 
-    doctorsApi.list({ ...filters, page, limit:12 })
+    doctorsApi.list({ ...filters, page, limit:3 })
       .then(r => {
         const { doctors: docs, total: tot, pages: pg, currentPage: cp } = r.data
         clog('FETCH', `✓ Response: total=${tot} returned=${docs?.length} pages=${pg} currentPage=${cp}`)
@@ -465,7 +465,7 @@ function DoctorsPageInner() {
           </div>
 
           {/* Fee */}
-          <div className="px-4 py-3.5" style={{ borderBottom:`1px solid ${C.sf}` }}>
+          {/* <div className="px-4 py-3.5" style={{ borderBottom:`1px solid ${C.sf}` }}>
             <div className={`${dmSans.className} text-[10px] font-semibold tracking-[0.12em] uppercase mb-2`} style={{ color:C.coral }}>Consultation Fee</div>
             {FEE_RANGES.map(f => {
               const active=(filters.minFee||'')=== f.min&&(filters.maxFee||'')=== f.max
@@ -476,18 +476,18 @@ function DoctorsPageInner() {
                 </FO>
               )
             })}
-          </div>
+          </div> */}
 
           {/* Rating */}
-          <div className="px-4 py-3.5" style={{ borderBottom:`1px solid ${C.sf}` }}>
+          {/* <div className="px-4 py-3.5" style={{ borderBottom:`1px solid ${C.sf}` }}>
             <div className={`${dmSans.className} text-[10px] font-semibold tracking-[0.12em] uppercase mb-2`} style={{ color:C.coral }}>Min Rating</div>
             {[{label:'Any Rating',value:''},{label:'4★ & above',value:'4'},{label:'3★ & above',value:'3'}].map(r=>(
               <FO key={r.value} active={(filters.minRating||'')===r.value} onClick={()=>setF('minRating',r.value)}>{r.label}</FO>
             ))}
-          </div>
+          </div> */}
 
           {/* Availability */}
-          <div className="px-4 py-3.5">
+          {/* <div className="px-4 py-3.5">
             <div className={`${dmSans.className} text-[10px] font-semibold tracking-[0.12em] uppercase mb-2.5`} style={{ color:C.coral }}>Availability</div>
             {[{key:'availableOnline',label:'Online Consult'},{key:'availableToday',label:'Available Today'}].map(item=>{
               const checked=filters[item.key as keyof typeof filters]==='true'
@@ -503,7 +503,7 @@ function DoctorsPageInner() {
                 </label>
               )
             })}
-          </div>
+          </div> */}
         </aside>
 
         {/* Main */}
@@ -569,7 +569,7 @@ function DoctorsPageInner() {
             ))
           }
 
-          {pages>1 && (
+          {/* {pages>1 && (
             <div className="flex items-center justify-center gap-1.5 mt-8">
               <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}
                 className="w-9 h-9 rounded-[9px] flex items-center justify-center bg-white border transition-all"
@@ -593,7 +593,7 @@ function DoctorsPageInner() {
                 <ChevronRight size={16}/>
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

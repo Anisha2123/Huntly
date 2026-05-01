@@ -222,7 +222,9 @@ export default function DoctorProfilePage() {
 
               {doc.specializations?.length>0 && (
                 <div className="flex flex-wrap gap-1.5 mb-3">
-                  {doc.specializations.map((s:any) => <Chip key={s._id} label={`${s.icon} ${s.name}`} v="w"/>)}
+                  {doc.specializations.map((s:any, i:number) => (
+                    <Chip key={s._id || s.slug || `${s.name}-${i}`} label={`${s.icon || '🩺'} ${s.name}`} v="w"/>
+                  ))}
                 </div>
               )}
 
