@@ -535,7 +535,7 @@ export default function DoctorProfilePage() {
             </div>
 
             {/* Info */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 w-full min-w-0">
               <div className="flex items-start justify-between gap-2 mb-1.5">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h1 className="text-[clamp(18px,4vw,30px)] font-semibold text-white m-0 leading-[1.15] tracking-[-0.01em]"
@@ -658,12 +658,12 @@ export default function DoctorProfilePage() {
                   <Phone size={12}/> Call
                 </a>
               )}
-              <button
+              {/* <button
                 onClick={()=>setTab('bk')}
                 className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-white text-xs font-semibold border-none cursor-pointer"
                 style={{ background:'linear-gradient(135deg,#D25380,#E08E6D)', boxShadow:'0 4px 14px rgba(210,83,128,0.28)' }}>
                 <Calendar size={12}/> Book
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -712,10 +712,10 @@ export default function DoctorProfilePage() {
                     <Phone size={13}/> Call
                   </a>
                 )}
-                <button onClick={()=>setTab('bk')}
+                {/* <button onClick={()=>setTab('bk')}
                   className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-white text-[#D25380] text-xs font-semibold border-none cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
                   <Calendar size={13}/> Book
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

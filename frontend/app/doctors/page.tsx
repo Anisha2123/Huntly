@@ -544,7 +544,7 @@ function DoctorsPageInner() {
           Mobile: search full width, sort hidden
           Tablet/Desktop: search + sort side by side
       ══════════════════════════════════════════ */}
-      <div className="sticky top-16 z-40 border-b border-white/10"
+      <div className="sticky top-16 z-20 border-b border-white/10"
         style={{ background:`linear-gradient(135deg,${C.pink} 0%,#B03060 100%)`, boxShadow:'0 4px 20px rgba(176,48,96,0.28)' }}>
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3">
 
