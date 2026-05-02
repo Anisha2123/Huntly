@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { ChevronLeft, ChevronRight, SlidersHorizontal, X, MapPin, BadgeCheck, Award, Bookmark, ArrowUpRight, Hash, Monitor, Building2, Video } from 'lucide-react'
+import { ChevronLeft, ChevronRight, SlidersHorizontal, X, MapPin, BadgeCheck, Award, Bookmark, ArrowUpRight, Hash, Monitor, Building2, Video, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
@@ -14,25 +14,12 @@ import toast from 'react-hot-toast'
 const cormorant = Cormorant_Garamond({ subsets:['latin'], weight:['400','600','700'], style:['normal','italic'], display:'swap', variable:'--font-cormorant' })
 const dmSans    = DM_Sans({ subsets:['latin'], weight:['300','400','500','600'], display:'swap', variable:'--font-dm' })
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Client-side logger — colour-coded groups in browser DevTools console
-// Open DevTools → Console to see these
-// ─────────────────────────────────────────────────────────────────────────────
 const PINK  = 'color:#D25380;font-weight:bold'
 const AMBER = 'color:#C47A3A;font-weight:bold'
 const RED   = 'color:#cc0000;font-weight:bold'
-
-function clog(tag: string, ...args: unknown[]) {
-  console.log(`%c[DOCTORS:${tag}]`, PINK, ...args)
-}
-function cwarn(tag: string, ...args: unknown[]) {
-  console.warn(`%c[DOCTORS:${tag}] ⚠`, AMBER, ...args)
-}
-function cerr(tag: string, ...args: unknown[]) {
-  console.error(`%c[DOCTORS:${tag}] ✗`, RED, ...args)
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
+function clog(tag: string, ...args: unknown[]) { console.log(`%c[DOCTORS:${tag}]`, PINK, ...args) }
+function cwarn(tag: string, ...args: unknown[]) { console.warn(`%c[DOCTORS:${tag}] ⚠`, AMBER, ...args) }
+function cerr(tag: string, ...args: unknown[]) { console.error(`%c[DOCTORS:${tag}] ✗`, RED, ...args) }
 
 const C = {
   bg:'#FFFAF4', pink:'#D25380', coral:'#E08E6D', peach:'#F6C391',
@@ -49,8 +36,8 @@ const SORT_OPTIONS = [
   { value:'rating',     label:'Highest Rated'    },
   { value:'reviews',    label:'Most Reviewed'    },
   { value:'experience', label:'Most Experienced' },
-  { value:'fee_asc',    label:'Fee: Low to High' },
-  { value:'fee_desc',   label:'Fee: High to Low' },
+  { value:'fee_asc',    label:'Fee: Low → High'  },
+  { value:'fee_desc',   label:'Fee: High → Low'  },
   { value:'rank',       label:'By Rank'          },
 ]
 const FEE_RANGES = [
@@ -82,6 +69,7 @@ function ModeBadge({ mode }: { mode?:string }) {
   )
 }
 
+// ─── Desktop / Tablet Doctor Card (horizontal) ───────────────────────────────
 function DoctorRow({ doctor, saved, onSave }: { doctor:any; saved:boolean; onSave:(id:string)=>void }) {
   const specs      = (doctor.specializations || []).slice(0,2)
   const conditions = (doctor.conditionsTreated || []).slice(0,3)
@@ -183,6 +171,87 @@ function DoctorRow({ doctor, saved, onSave }: { doctor:any; saved:boolean; onSav
   )
 }
 
+// ─── Mobile Doctor Card (vertical, compact) ───────────────────────────────────
+function DoctorCard({ doctor, saved, onSave }: { doctor:any; saved:boolean; onSave:(id:string)=>void }) {
+  const specs = (doctor.specializations || []).slice(0,1)
+  const accentBg = doctor.isFeatured ? `linear-gradient(135deg,${C.pink},${C.coral})` : C.sf
+
+  return (
+    <div
+      className="bg-white rounded-2xl overflow-hidden cursor-pointer"
+      style={{ border:'1.5px solid rgba(210,83,128,0.07)', boxShadow:C.shadowCard, transition:'all .2s ease' }}
+    >
+      {/* Gradient header strip */}
+      <div style={{ background:`linear-gradient(135deg,${C.pink} 0%,${C.coral} 100%)`, padding:'14px 14px 20px', position:'relative' }}>
+        <div style={{ position:'absolute', bottom:-1, left:0, right:0, height:16, background:'#fff', borderRadius:'14px 14px 0 0' }} />
+        {/* Top row: avatar + bookmark */}
+        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
+          <div style={{ position:'relative' }}>
+            <div style={{ width:50, height:50, borderRadius:13, overflow:'hidden', border:'2px solid rgba(255,255,255,0.35)', boxShadow:'0 4px 14px rgba(0,0,0,0.15)' }}>
+              <Image src={doctor.photo||getAvatarUrl(doctor.name)} alt={doctor.name} width={50} height={50} className="object-cover w-full h-full" unoptimized/>
+            </div>
+            {doctor.availableToday && (
+              <span style={{ position:'absolute', bottom:-1, right:-1, width:11, height:11, borderRadius:'50%', border:'2px solid white', background:C.sg, boxShadow:`0 0 5px ${C.sg}` }}/>
+            )}
+          </div>
+          <button onClick={e=>{e.stopPropagation();onSave(doctor._id)}} style={{ background:'rgba(255,255,255,0.18)', border:'none', cursor:'pointer', width:28, height:28, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <Bookmark size={13} style={{ color:saved?C.peach:'rgba(255,255,255,0.7)' }} fill={saved?C.peach:'none'}/>
+          </button>
+        </div>
+        {/* Name */}
+        <div style={{ position:'relative', zIndex:1, marginTop:8 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+            <span className={cormorant.className} style={{ fontSize:15, fontWeight:600, color:'#fff', lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:140 }}>
+              {doctor.name}
+            </span>
+            {doctor.isVerified && <BadgeCheck size={12} style={{ color:'rgba(255,255,255,0.8)', flexShrink:0 }}/>}
+          </div>
+          {specs[0] && (
+            <span className={dmSans.className} style={{ fontSize:10, color:'rgba(255,255,255,0.65)', marginTop:2, display:'block' }}>
+              {specs[0].icon||'🩺'} {specs[0].name}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Body */}
+      <div style={{ padding:'10px 14px 14px' }}>
+        {doctor.experience && (
+          <div className={dmSans.className} style={{ fontSize:10, color:C.mu, marginBottom:8 }}>
+            {doctor.experience} yrs experience
+            {doctor.primaryCity && <> · <MapPin size={8} style={{ display:'inline', verticalAlign:'middle', color:C.coral }}/> {doctor.primaryCity}</>}
+          </div>
+        )}
+
+        {/* Rating row */}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
+          {doctor.averageRating > 0 ? (
+            <div style={{ display:'flex', alignItems:'center', gap:4 }}>
+              <span style={{ color:C.peach, fontSize:12 }}>★</span>
+              <span className={cormorant.className} style={{ fontSize:14, fontWeight:700, color:C.ink }}>{Number(doctor.averageRating).toFixed(1)}</span>
+              {doctor.totalReviews > 0 && <span className={dmSans.className} style={{ fontSize:10, color:C.mu }}>({doctor.totalReviews})</span>}
+            </div>
+          ) : <span/>}
+          <div style={{ textAlign:'right' }}>
+            <div className={dmSans.className} style={{ fontSize:8, color:C.mu, letterSpacing:'0.06em', textTransform:'uppercase' }}>Fee</div>
+            <div className={cormorant.className} style={{ fontSize:16, fontWeight:700, color:C.pink, lineHeight:1 }}>
+              {doctor.consultationFee != null && doctor.consultationFee > 0
+                ? formatFee(doctor.consultationFee)
+                : <span className={dmSans.className} style={{ fontSize:11, fontWeight:400, color:C.mu }}>On request</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <Link href={`/doctors/${doctor.slug}`} onClick={e=>e.stopPropagation()}
+          style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:6, background:`linear-gradient(135deg,${C.pink},${C.coral})`, color:'#fff', fontSize:11, fontWeight:600, padding:'9px 0', borderRadius:10, textDecoration:'none', letterSpacing:'0.04em', boxShadow:'0 3px 12px rgba(210,83,128,0.22)', width:'100%' }}>
+          View Profile <ArrowUpRight size={12}/>
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 function SkeletonRow() {
   return (
     <div className="bg-white rounded-2xl overflow-hidden mb-2.5 flex gap-4 p-[18px]" style={{ border:'1px solid rgba(210,83,128,0.07)', boxShadow:C.shadowCard }}>
@@ -199,6 +268,19 @@ function SkeletonRow() {
       <div className="w-[150px] flex flex-col items-end gap-2.5">
         <div className="h-[30px] w-[55px] rounded-md animate-pulse" style={{ background:C.sf }}/>
         <div className="h-9 w-[115px] rounded-[10px] animate-pulse" style={{ background:C.sf }}/>
+      </div>
+    </div>
+  )
+}
+
+function SkeletonCard() {
+  return (
+    <div className="bg-white rounded-2xl overflow-hidden animate-pulse" style={{ border:'1px solid rgba(210,83,128,0.07)' }}>
+      <div style={{ height:90, background:C.sf }}/>
+      <div style={{ padding:'10px 14px 14px', display:'flex', flexDirection:'column', gap:8 }}>
+        <div style={{ height:12, width:'60%', borderRadius:6, background:C.sf }}/>
+        <div style={{ height:10, width:'40%', borderRadius:6, background:C.sf }}/>
+        <div style={{ height:32, borderRadius:10, background:C.sf }}/>
       </div>
     </div>
   )
@@ -225,6 +307,122 @@ function PageSkeleton() {
   )
 }
 
+// ─── Sidebar Filter Panel (shared between desktop and mobile drawer) ──────────
+function FilterPanel({
+  filters, specOptions, hasFilters,
+  setF, clearAll, onClose,
+}: {
+  filters: any
+  specOptions: any[]
+  hasFilters: boolean
+  setF: (k:string, v:string|undefined) => void
+  clearAll: () => void
+  onClose?: () => void
+}) {
+  return (
+    <div style={{ display:'flex', flexDirection:'column', height:'100%' }}>
+      {/* Header */}
+      <div style={{ padding:'16px 18px', borderBottom:`1px solid ${C.sf}`, display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
+        <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+          <span className={`${cormorant.className}`} style={{ fontSize:17, fontWeight:600, color:C.pink, display:'flex', alignItems:'center', gap:6 }}>
+            <SlidersHorizontal size={14}/> Filters
+          </span>
+          <span className={dmSans.className} style={{ display:'inline-flex', alignItems:'center', gap:4, fontSize:10, fontWeight:500, padding:'2px 8px', borderRadius:100, background:'rgba(210,83,128,0.07)', color:C.pink, width:'fit-content' }}>
+            <MapPin size={8}/> Jaipur, Rajasthan
+          </span>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          {hasFilters && (
+            <button onClick={()=>{clearAll();onClose&&onClose()}} className={dmSans.className}
+              style={{ background:'transparent', border:'none', cursor:'pointer', fontSize:11, fontWeight:600, display:'flex', alignItems:'center', gap:4, color:C.coral }}>
+              <X size={11}/> Clear
+            </button>
+          )}
+          {onClose && (
+            <button onClick={onClose} style={{ background:'rgba(210,83,128,0.07)', border:'none', cursor:'pointer', width:28, height:28, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <X size={14} style={{ color:C.pink }}/>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Scrollable body */}
+      <div style={{ flex:1, overflowY:'auto', padding:'4px 0 16px' }}>
+
+        {/* Area */}
+        <div style={{ padding:'14px 18px', borderBottom:`1px solid ${C.sf}` }}>
+          <div className={dmSans.className} style={{ fontSize:9, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', color:C.coral, marginBottom:10 }}>
+            Area in Jaipur
+          </div>
+          <select
+            value={filters.area||''}
+            onChange={e=>setF('area',e.target.value||undefined)}
+            className={dmSans.className}
+            style={{ width:'100%', background:C.sf, border:'1px solid rgba(210,83,128,0.12)', borderRadius:10, padding:'9px 12px', fontSize:12, color:C.ink, outline:'none', cursor:'pointer', appearance:'none', backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23AA8090' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat:'no-repeat', backgroundPosition:'right 10px center' }}
+          >
+            <option value="">All Areas</option>
+            {JAIPUR_AREAS.map(a=><option key={a} value={a}>{a}</option>)}
+          </select>
+        </div>
+
+        {/* Specialization */}
+        <div style={{ padding:'14px 18px' }}>
+          <div className={dmSans.className} style={{ fontSize:9, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', color:C.coral, marginBottom:10 }}>
+            Specialization
+            {specOptions.length === 0 && (
+              <span style={{ fontWeight:400, textTransform:'none', letterSpacing:0, color:C.mu, marginLeft:4, fontSize:10 }}>(loading…)</span>
+            )}
+          </div>
+
+          {/* Scrollable list */}
+          <div style={{
+            maxHeight:220,
+            overflowY:'auto',
+            display:'flex',
+            flexDirection:'column',
+            gap:4,
+            paddingRight:2,
+            /* custom scrollbar */
+            scrollbarWidth:'thin',
+            scrollbarColor:`rgba(210,83,128,0.25) transparent`,
+          }}>
+            <style>{`
+              .spec-scroll::-webkit-scrollbar { width: 3px; }
+              .spec-scroll::-webkit-scrollbar-track { background: transparent; }
+              .spec-scroll::-webkit-scrollbar-thumb { background: rgba(210,83,128,0.2); border-radius: 10px; }
+              .spec-scroll::-webkit-scrollbar-thumb:hover { background: rgba(210,83,128,0.4); }
+            `}</style>
+
+            <button
+              onClick={()=>setF('specialization','')}
+              className={`${dmSans.className} spec-scroll`}
+              style={{ display:'flex', alignItems:'center', width:'100%', padding:'8px 11px', borderRadius:10, fontSize:12, fontWeight:!filters.specialization?600:400, background:!filters.specialization?`linear-gradient(135deg,${C.pink},${C.coral})`:'rgba(210,83,128,0.04)', color:!filters.specialization?'#fff':C.muD, border:'none', cursor:'pointer', textAlign:'left', transition:'all .15s', boxShadow:!filters.specialization?'0 3px 10px rgba(210,83,128,0.22)':'none', flexShrink:0 }}>
+              🩺 All Specializations
+            </button>
+
+            <div className="spec-scroll" style={{ overflowY:'auto', maxHeight:168, display:'flex', flexDirection:'column', gap:3 }}>
+              {specOptions.map(s => {
+                const active = filters.specialization === s.slug
+                return (
+                  <button key={s.slug} onClick={()=>setF('specialization',s.slug)} className={dmSans.className}
+                    style={{ display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%', padding:'8px 11px', borderRadius:10, fontSize:12, fontWeight:active?600:400, background:active?`linear-gradient(135deg,${C.pink},${C.coral})`:'rgba(210,83,128,0.04)', color:active?'#fff':C.muD, border:active?'none':'1px solid rgba(210,83,128,0.08)', cursor:'pointer', textAlign:'left', transition:'all .15s', boxShadow:active?'0 3px 10px rgba(210,83,128,0.22)':'none', flexShrink:0 }}>
+                    {s.icon} {s.name}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Fee — COMMENTED KEPT */}
+        {/* <div style={{ padding:'14px 18px', borderBottom:`1px solid ${C.sf}` }}>
+          ...
+        </div> */}
+      </div>
+    </div>
+  )
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 function DoctorsPageInner() {
   const searchParams = useSearchParams()
@@ -239,6 +437,7 @@ function DoctorsPageInner() {
   const [savedIds,    setSavedIds]    = useState<string[]>([])
   const [specOptions, setSpecOptions] = useState<{name:string;slug:string;icon:string}[]>([])
   const [searchQ,     setSearchQ]     = useState(searchParams.get('search')||'')
+  const [drawerOpen,  setDrawerOpen]  = useState(false)
 
   const getFilters = useCallback(() => ({
     search:          searchParams.get('search')          || undefined,
@@ -273,97 +472,30 @@ function DoctorsPageInner() {
     setFilters({ city:'Jaipur' } as any); setPage(1); router.push('/doctors')
   }
 
-  // ── 1. Load specialization options from /filters/meta ────────
   useEffect(() => {
     const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
-    const url = `${API}/doctors/filters/meta?city=Jaipur`
-    clog('META', `Fetching → ${url}`)
-
-    fetch(url)
-      .then(r => {
-        clog('META', `HTTP ${r.status} ${r.statusText}`)
-        if (!r.ok) throw new Error(`HTTP ${r.status}`)
-        return r.json()
-      })
-      .then(data => {
-        clog('META', 'Response:', data)
-        if (data.specializations?.length) {
-          clog('META', `✓ ${data.specializations.length} specializations loaded:`, data.specializations.map((s:any)=>s.name))
-          setSpecOptions(data.specializations)
-        } else {
-          cwarn('META', 'specializations array is empty — sidebar filter will show nothing')
-          cwarn('META', 'Possible cause: specializations.name field is empty in all DB docs')
-        }
-        if (data.areas?.length) {
-          clog('META', `Areas: [${data.areas.join(', ')}]`)
-        } else {
-          cwarn('META', 'No areas returned — check primaryArea field in DB docs')
-        }
-      })
-      .catch(err => {
-        cerr('META', 'Fetch failed:', err.message)
-        cerr('META', 'Check: Is backend running? Is NEXT_PUBLIC_API_URL set correctly?')
-        cerr('META', `Current NEXT_PUBLIC_API_URL = "${process.env.NEXT_PUBLIC_API_URL || '(not set)'}"`)
-      })
+    fetch(`${API}/doctors/filters/meta?city=Jaipur`)
+      .then(r=>{ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
+      .then(data=>{ if(data.specializations?.length) setSpecOptions(data.specializations) })
+      .catch(err=>cerr('META', err.message))
   }, [])
 
-  // ── 2. Fetch doctors when filters or page changes ─────────────
   useEffect(() => {
-    const activeFilters = Object.fromEntries(
-      Object.entries(filters).filter(([k,v]) => v && k !== 'city')
-    )
-    console.group(`%c[DOCTORS:FETCH] page=${page}`, PINK)
-    clog('FETCH', 'Active filters (excluding city=Jaipur):', activeFilters)
-    clog('FETCH', 'Full params sent to API:', { ...filters, page, limit:3 })
-
     setLoading(true)
-
     doctorsApi.list({ ...filters, page, limit:3 })
       .then(r => {
-        const { doctors: docs, total: tot, pages: pg, currentPage: cp } = r.data
-        clog('FETCH', `✓ Response: total=${tot} returned=${docs?.length} pages=${pg} currentPage=${cp}`)
-
-        if (!docs || docs.length === 0) {
-          cwarn('FETCH', '--- ZERO DOCTORS RETURNED ---')
-          cwarn('FETCH', 'Check backend terminal for [DOCTORS:LIST] logs which will show the MongoDB query and diagnostics')
-          cwarn('FETCH', 'Common causes:')
-          cwarn('FETCH', '  1. Seed data not imported — run mongoimport first')
-          cwarn('FETCH', '  2. isActive field is missing or false in seed docs')
-          cwarn('FETCH', '  3. primaryCity does not match "Jaipur" (case sensitive regex should handle this)')
-          cwarn('FETCH', '  4. Fee filter too narrow — try clearing fee filter')
-          cwarn('FETCH', '  5. Specialization slug mismatch — slug in DB vs URL param')
-          cwarn('FETCH', '  6. NEXT_PUBLIC_API_URL points to wrong server or port')
-        } else {
-          clog('FETCH', `First doctor: "${docs[0].name}" | area="${docs[0].primaryArea}" | fee=${docs[0].consultationFee} | rating=${docs[0].averageRating}`)
-          clog('FETCH', `  specializations:`, docs[0].specializations)
-        }
-
-        setDoctors(docs || [])
-        setTotal(tot || 0)
-        setPages(pg || 1)
-        console.groupEnd()
+        const { doctors: docs, total: tot, pages: pg } = r.data
+        setDoctors(docs || []); setTotal(tot || 0); setPages(pg || 1)
       })
-      .catch(err => {
-        console.groupEnd()
-        cerr('FETCH', 'API call failed:', err.message)
-        cerr('FETCH', 'Full error:', err)
-        cerr('FETCH', `NEXT_PUBLIC_API_URL = "${process.env.NEXT_PUBLIC_API_URL || '(not set — defaulting to http://localhost:5000/api)'}"`)
-        toast.error('Failed to load doctors')
-      })
-      .finally(() => setLoading(false))
+      .catch(err=>{ cerr('FETCH', err.message); toast.error('Failed to load doctors') })
+      .finally(()=>setLoading(false))
   }, [filters, page])
 
-  // ── 3. Saved doctors ──────────────────────────────────────────
   useEffect(() => {
     if (!isAuthenticated) return
-    clog('SAVED', 'Fetching user saved doctors')
     authApi.me()
-      .then(r => {
-        const ids = r.data.user.savedDoctors?.map((d:any) => d._id || d) || []
-        clog('SAVED', `User has ${ids.length} saved doctor(s)`)
-        setSavedIds(ids)
-      })
-      .catch(err => cwarn('SAVED', 'Could not load saved doctors:', err.message))
+      .then(r=>{ setSavedIds(r.data.user.savedDoctors?.map((d:any)=>d._id||d)||[]) })
+      .catch(err=>cwarn('SAVED', err.message))
   }, [isAuthenticated])
 
   const handleSave = async (id:string) => {
@@ -372,228 +504,240 @@ function DoctorsPageInner() {
       const r = await authApi.saveDoctor(id)
       if (r.data.saved) { setSavedIds(p=>[...p,id]); toast.success('Saved!') }
       else              { setSavedIds(p=>p.filter(s=>s!==id)); toast.success('Removed') }
-    } catch (err:any) {
-      cerr('SAVE', err.message)
-      toast.error('Something went wrong')
-    }
+    } catch (err:any) { cerr('SAVE', err.message); toast.error('Something went wrong') }
   }
 
   const handleSearch = (e:React.FormEvent) => {
     e.preventDefault()
-    clog('SEARCH', `Submitting search: "${searchQ}"`)
     setF('search', searchQ||undefined)
   }
 
   const hasFilters = Object.entries(filters).some(([k,v]) => k !== 'city' && Boolean(v))
 
+  const activeFilterCount = Object.entries(filters).filter(([k,v]) => k !== 'city' && Boolean(v)).length
+
   return (
     <div className={`${cormorant.variable} ${dmSans.variable} min-h-screen pt-16`} style={{ background:C.bg, fontFamily:'var(--font-dm)' }}>
 
-      {/* Top search/sort bar */}
+      {/* ── Global styles ── */}
+      <style>{`
+        @keyframes dr-slide-up { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes dr-fade-in  { from{opacity:0} to{opacity:1} }
+        @keyframes dr-drawer-up { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        .dre { animation: dr-slide-up .35s cubic-bezier(.16,1,.3,1) both; }
+        .dre:nth-child(1){animation-delay:.04s}
+        .dre:nth-child(2){animation-delay:.09s}
+        .dre:nth-child(3){animation-delay:.14s}
+        .dre:nth-child(4){animation-delay:.19s}
+        .dre:nth-child(5){animation-delay:.24s}
+        .dr-drawer { animation: dr-drawer-up .32s cubic-bezier(.16,1,.3,1) both; }
+        .dr-overlay { animation: dr-fade-in .2s ease both; }
+        /* Thin scrollbar for spec list */
+        .spec-list::-webkit-scrollbar { width: 3px; }
+        .spec-list::-webkit-scrollbar-track { background: transparent; }
+        .spec-list::-webkit-scrollbar-thumb { background: rgba(210,83,128,0.22); border-radius:10px; }
+        .spec-list::-webkit-scrollbar-thumb:hover { background: rgba(210,83,128,0.4); }
+      `}</style>
+
+      {/* ══════════════════════════════════════════
+          TOP BAR — shared all breakpoints
+          Mobile: search full width, sort hidden
+          Tablet/Desktop: search + sort side by side
+      ══════════════════════════════════════════ */}
       <div className="sticky top-16 z-40 border-b border-white/10"
         style={{ background:`linear-gradient(135deg,${C.pink} 0%,#B03060 100%)`, boxShadow:'0 4px 20px rgba(176,48,96,0.28)' }}>
-        <div className="max-w-[1280px] mx-auto px-8 py-3 flex items-center justify-between gap-4">
-          <form onSubmit={handleSearch} className="flex-1 max-w-[520px] flex items-center gap-2.5 bg-white/15 border border-white/25 rounded-[10px] px-3.5 pr-1">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3">
+
+          {/* Mobile: filter trigger */}
+          <button
+            onClick={()=>setDrawerOpen(true)}
+            className="lg:hidden flex items-center gap-1.5 shrink-0"
+            style={{ background:'rgba(255,255,255,0.18)', border:'1px solid rgba(255,255,255,0.25)', borderRadius:9, padding:'8px 12px', color:'#fff', cursor:'pointer', position:'relative' }}>
+            <SlidersHorizontal size={14}/>
+            {activeFilterCount > 0 && (
+              <span style={{ position:'absolute', top:-5, right:-5, width:16, height:16, borderRadius:'50%', background:C.peach, color:C.ink, fontSize:9, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+
+          {/* Search */}
+          <form onSubmit={handleSearch} className="flex-1 flex items-center gap-2 bg-white/15 border border-white/25 rounded-[10px] px-3 pr-1">
             <input value={searchQ} onChange={e=>setSearchQ(e.target.value)}
-              placeholder="Search doctors, conditions, procedures..."
-              className={`${dmSans.className} flex-1 bg-transparent border-none text-[13px] text-white py-2.5 outline-none placeholder:text-white/60`}/>
-            <button type="submit" className={`${dmSans.className} bg-white/20 border-none rounded-[7px] px-3.5 py-1.5 text-white text-xs font-semibold cursor-pointer tracking-[0.04em] hover:bg-white/30 transition-colors shrink-0`}>
-              Search
+              placeholder="Search doctors, conditions..."
+              className={`${dmSans.className} flex-1 bg-transparent border-none text-[13px] text-white py-2.5 outline-none placeholder:text-white/55 min-w-0`}/>
+            <button type="submit" className={`${dmSans.className} bg-white/20 border-none rounded-[7px] px-3 py-1.5 text-white text-xs font-semibold cursor-pointer tracking-[0.04em] hover:bg-white/30 transition-colors shrink-0`}>
+              Go
             </button>
           </form>
-          <select value={filters.sortBy||''} onChange={e=>setF('sortBy',e.target.value)} className={dmSans.className}
-            style={{ background:'rgba(255,255,255,0.18)', border:'1px solid rgba(255,255,255,0.28)', borderRadius:9, padding:'9px 14px', fontSize:13, color:'#fff', cursor:'pointer', outline:'none' }}>
+
+          {/* Sort — hidden on mobile */}
+          <select value={filters.sortBy||''} onChange={e=>setF('sortBy',e.target.value)}
+            className={`${dmSans.className} hidden sm:block`}
+            style={{ background:'rgba(255,255,255,0.18)', border:'1px solid rgba(255,255,255,0.28)', borderRadius:9, padding:'9px 12px', fontSize:12, color:'#fff', cursor:'pointer', outline:'none', flexShrink:0 }}>
             {SORT_OPTIONS.map(o=><option key={o.value} value={o.value} style={{ color:'#2A1520', background:'#fff' }}>{o.label}</option>)}
           </select>
         </div>
       </div>
 
-      {/* Body */}
-      <div className="max-w-[1280px] mx-auto px-8 py-6 flex gap-6 items-start">
 
-        {/* Sidebar */}
-        <aside className="w-[252px] shrink-0 bg-white rounded-2xl overflow-hidden sticky top-32" style={{ border:`1px solid ${C.bd}`, boxShadow:C.shadowSidebar }}>
-          <div className="px-4 py-4 flex items-center justify-between" style={{ borderBottom:`1px solid ${C.sf}` }}>
-            <div className="flex flex-col gap-1">
-              <span className={`${cormorant.className} text-[16px] font-semibold flex items-center gap-1.5`} style={{ color:C.pink }}>
-                <SlidersHorizontal size={14}/> Filters
-              </span>
-              <span className={`${dmSans.className} inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full w-fit`} style={{ background:'rgba(210,83,128,0.07)', color:C.pink }}>
-                <MapPin size={8}/> Jaipur, Rajasthan
-              </span>
+      {/* ══════════════════════════════════════════
+          MOBILE FILTER DRAWER (< 1024px)
+          Bottom sheet, slides up
+      ══════════════════════════════════════════ */}
+      {drawerOpen && (
+        <>
+          {/* Backdrop */}
+          <div className="dr-overlay fixed inset-0 z-50 lg:hidden" style={{ background:'rgba(42,21,32,0.45)', backdropFilter:'blur(2px)' }}
+            onClick={()=>setDrawerOpen(false)}/>
+          {/* Sheet */}
+          <div className="dr-drawer fixed bottom-0 left-0 right-0 z-50 lg:hidden"
+            style={{ background:'#fff', borderRadius:'20px 20px 0 0', maxHeight:'85vh', display:'flex', flexDirection:'column', boxShadow:'0 -8px 40px rgba(160,60,80,0.18)' }}>
+            {/* Drag handle */}
+            <div style={{ display:'flex', justifyContent:'center', padding:'10px 0 0' }}>
+              <div style={{ width:36, height:4, borderRadius:100, background:'rgba(210,83,128,0.15)' }}/>
             </div>
-            {hasFilters && (
-              <button onClick={clearAll} className={`${dmSans.className} bg-transparent border-none cursor-pointer text-[11px] font-semibold flex items-center gap-1`} style={{ color:C.coral }}>
-                <X size={11}/> Clear
+            <FilterPanel
+              filters={filters}
+              specOptions={specOptions}
+              hasFilters={hasFilters}
+              setF={setF}
+              clearAll={clearAll}
+              onClose={()=>setDrawerOpen(false)}
+            />
+            {/* Apply button */}
+            <div style={{ padding:'12px 18px 24px', borderTop:`1px solid ${C.sf}`, flexShrink:0 }}>
+              <button onClick={()=>setDrawerOpen(false)} style={{ width:'100%', background:`linear-gradient(135deg,${C.pink},${C.coral})`, border:'none', borderRadius:12, padding:'13px', color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer', boxShadow:'0 4px 16px rgba(210,83,128,0.25)', letterSpacing:'0.04em' }}>
+                Apply Filters
               </button>
-            )}
+            </div>
           </div>
+        </>
+      )}
 
-          {/* Area */}
-          <div className="px-4 py-3.5" style={{ borderBottom:`1px solid ${C.sf}` }}>
-            <div className={`${dmSans.className} text-[10px] font-semibold tracking-[0.12em] uppercase mb-2`} style={{ color:C.coral }}>Area in Jaipur</div>
-            <select value={filters.area||''} onChange={e=>setF('area',e.target.value||undefined)} className={dmSans.className}
-              style={{ width:'100%', background:C.sf, border:'1px solid rgba(210,83,128,0.12)', borderRadius:9, padding:'8px 12px', fontSize:12, color:C.ink, outline:'none', cursor:'pointer' }}>
-              <option value="">All Areas</option>
-              {JAIPUR_AREAS.map(a=><option key={a} value={a}>{a}</option>)}
-            </select>
-          </div>
 
-          {/* Specialization */}
-          <div className="px-4 py-3.5" style={{ borderBottom:`1px solid ${C.sf}` }}>
-            <div className={`${dmSans.className} text-[10px] font-semibold tracking-[0.12em] uppercase mb-3`} style={{ color:C.coral }}>
-              Specialization
-              {specOptions.length === 0 && (
-                <span style={{ fontWeight:400, textTransform:'none', letterSpacing:0, color:C.mu, marginLeft:4 }}>(loading…)</span>
+      {/* ══════════════════════════════════════════
+          BODY LAYOUT
+      ══════════════════════════════════════════ */}
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-5 lg:py-6">
+        <div className="flex gap-6 items-start">
+
+          {/* ── Desktop Sidebar (≥ 1024px) ── */}
+          <aside className="hidden lg:flex w-[252px] shrink-0 bg-white rounded-2xl overflow-hidden sticky top-32 flex-col"
+            style={{ border:`1px solid ${C.bd}`, boxShadow:C.shadowSidebar, maxHeight:'calc(100vh - 9rem)' }}>
+            <FilterPanel
+              filters={filters}
+              specOptions={specOptions}
+              hasFilters={hasFilters}
+              setF={setF}
+              clearAll={clearAll}
+            />
+          </aside>
+
+          {/* ── Main content ── */}
+          <div className="flex-1 min-w-0">
+
+            {/* Result header */}
+            <div className="flex items-start sm:items-center justify-between mb-4 gap-3 flex-wrap">
+              <div>
+                <h1 className={cormorant.className} style={{ fontSize:'clamp(20px,4vw,26px)', fontWeight:600, color:C.ink, lineHeight:1.2, margin:0 }}>
+                  {filters.specialization
+                    ? filters.specialization.charAt(0).toUpperCase()+filters.specialization.slice(1).replace(/-/g,' ')+'s'
+                    : 'Doctors'}
+                  <span style={{ color:C.mu, fontStyle:'italic' }}>
+                    {filters.area ? ` in ${filters.area}` : ' in Jaipur'}
+                  </span>
+                </h1>
+                {!loading && (
+                  <p className={`${dmSans.className} text-[12px] mt-0.5 font-light`} style={{ color:C.mu }}>
+                    {total} {total===1?'doctor':'doctors'} found
+                  </p>
+                )}
+              </div>
+              {hasFilters && (
+                <div className="flex gap-1.5 flex-wrap">
+                  {filters.search && (
+                    <span className={`${dmSans.className} text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1.5`} style={{ background:'rgba(210,83,128,0.08)', color:C.pink }}>
+                      "{filters.search}"
+                      <button onClick={()=>setF('search','')} style={{ background:'none', border:'none', cursor:'pointer', color:C.pink, lineHeight:1, padding:0, fontSize:13 }}>×</button>
+                    </span>
+                  )}
+                  {filters.area && (
+                    <span className={`${dmSans.className} text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1.5`} style={{ background:'rgba(224,142,109,0.1)', color:C.coral }}>
+                      <MapPin size={9}/> {filters.area}
+                      <button onClick={()=>setF('area','')} style={{ background:'none', border:'none', cursor:'pointer', color:C.coral, lineHeight:1, padding:0, fontSize:13 }}>×</button>
+                    </span>
+                  )}
+                  {filters.specialization && (
+                    <span className={`${dmSans.className} text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1.5`} style={{ background:'rgba(210,83,128,0.08)', color:C.pink }}>
+                      {filters.specialization}
+                      <button onClick={()=>setF('specialization','')} style={{ background:'none', border:'none', cursor:'pointer', color:C.pink, lineHeight:1, padding:0, fontSize:13 }}>×</button>
+                    </span>
+                  )}
+                </div>
               )}
             </div>
-            <div className="flex flex-col gap-1.5 max-h-[200px] overflow-y-auto">
-              <button onClick={()=>setF('specialization','')} className={dmSans.className}
-                style={{ display:'flex', alignItems:'center', width:'100%', padding:'8px 11px', borderRadius:10, fontSize:12, fontWeight:!filters.specialization?600:400, background:!filters.specialization?`linear-gradient(135deg,${C.pink},${C.coral})`:'rgba(210,83,128,0.05)', color:!filters.specialization?'#fff':C.muD, border:'none', cursor:'pointer', textAlign:'left', transition:'all .15s', boxShadow:!filters.specialization?'0 3px 10px rgba(210,83,128,0.22)':'none' }}>
-                🩺 All Specializations
-              </button>
-              {specOptions.map(s => {
-                const active = filters.specialization === s.slug
-                return (
-                  <button key={s.slug} onClick={()=>setF('specialization',s.slug)} className={dmSans.className}
-                    style={{ display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%', padding:'8px 11px', borderRadius:10, fontSize:12, fontWeight:active?600:400, background:active?`linear-gradient(135deg,${C.pink},${C.coral})`:'rgba(210,83,128,0.04)', color:active?'#fff':C.muD, border:active?'none':'1px solid rgba(210,83,128,0.08)', cursor:'pointer', textAlign:'left', transition:'all .15s', boxShadow:active?'0 3px 10px rgba(210,83,128,0.22)':'none' }}>
-                    {s.icon} {s.name}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
 
-          {/* Fee */}
-          {/* <div className="px-4 py-3.5" style={{ borderBottom:`1px solid ${C.sf}` }}>
-            <div className={`${dmSans.className} text-[10px] font-semibold tracking-[0.12em] uppercase mb-2`} style={{ color:C.coral }}>Consultation Fee</div>
-            {FEE_RANGES.map(f => {
-              const active=(filters.minFee||'')=== f.min&&(filters.maxFee||'')=== f.max
-              return (
-                <FO key={f.label} active={active}
-                  onClick={()=>{ const n={...filters,minFee:f.min||undefined,maxFee:f.max||undefined,city:'Jaipur'}; setFilters(n as any); setPage(1); updateURL(n,1) }}>
-                  {f.label}
-                </FO>
-              )
-            })}
-          </div> */}
-
-          {/* Rating */}
-          {/* <div className="px-4 py-3.5" style={{ borderBottom:`1px solid ${C.sf}` }}>
-            <div className={`${dmSans.className} text-[10px] font-semibold tracking-[0.12em] uppercase mb-2`} style={{ color:C.coral }}>Min Rating</div>
-            {[{label:'Any Rating',value:''},{label:'4★ & above',value:'4'},{label:'3★ & above',value:'3'}].map(r=>(
-              <FO key={r.value} active={(filters.minRating||'')===r.value} onClick={()=>setF('minRating',r.value)}>{r.label}</FO>
-            ))}
-          </div> */}
-
-          {/* Availability */}
-          {/* <div className="px-4 py-3.5">
-            <div className={`${dmSans.className} text-[10px] font-semibold tracking-[0.12em] uppercase mb-2.5`} style={{ color:C.coral }}>Availability</div>
-            {[{key:'availableOnline',label:'Online Consult'},{key:'availableToday',label:'Available Today'}].map(item=>{
-              const checked=filters[item.key as keyof typeof filters]==='true'
-              return (
-                <label key={item.key} className="flex items-center gap-2 py-1.5 cursor-pointer">
-                  <div onClick={()=>setF(item.key,checked?'':'true')}
-                    className="w-4 h-4 rounded-[5px] flex items-center justify-center shrink-0 cursor-pointer transition-all"
-                    style={{ border:`1.5px solid ${checked?C.pink:'rgba(210,83,128,0.25)'}`, background:checked?C.pink:C.wh }}>
-                    {checked&&<span className="text-white text-[9px] font-bold leading-none">✓</span>}
+            {/* ── DESKTOP / WIDE TABLET: horizontal rows (≥ 768px) ── */}
+            <div className="hidden sm:block">
+              {loading
+                ? Array.from({length:4}).map((_,i)=><SkeletonRow key={i}/>)
+                : doctors.length===0
+                ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="text-5xl mb-4">🔍</div>
+                    <h3 className={cormorant.className} style={{ fontSize:24, color:C.ink, marginBottom:8 }}>No doctors found</h3>
+                    <p className={`${dmSans.className} text-sm font-light mb-6`} style={{ color:C.mu }}>Try adjusting your filters or search terms.</p>
+                    <button onClick={clearAll} className={`${dmSans.className} text-white border-none rounded-xl px-7 py-3 text-[13px] font-semibold cursor-pointer`}
+                      style={{ background:`linear-gradient(135deg,${C.pink},${C.coral})`, boxShadow:'0 4px 16px rgba(210,83,128,0.25)' }}>
+                      Clear All Filters
+                    </button>
                   </div>
-                  <span className={`${dmSans.className} text-[13px] cursor-pointer`} style={{ color:C.muD }}
-                    onClick={()=>setF(item.key,checked?'':'true')}>{item.label}</span>
-                </label>
-              )
-            })}
-          </div> */}
-        </aside>
-
-        {/* Main */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className={cormorant.className} style={{ fontSize:26, fontWeight:600, color:C.ink, lineHeight:1.2, margin:0 }}>
-                {filters.specialization
-                  ? filters.specialization.charAt(0).toUpperCase()+filters.specialization.slice(1).replace(/-/g,' ')+'s'
-                  : 'Doctors'}
-                <span style={{ color:C.mu, fontStyle:'italic' }}>
-                  {filters.area ? ` in ${filters.area}` : ' in Jaipur'}
-                </span>
-              </h1>
-              {!loading && (
-                <p className={`${dmSans.className} text-[13px] mt-0.5 font-light`} style={{ color:C.mu }}>
-                  {total} {total===1?'doctor':'doctors'} found
-                </p>
-              )}
-            </div>
-            {hasFilters && (
-              <div className="flex gap-1.5 flex-wrap justify-end max-w-[380px]">
-                {filters.search && (
-                  <span className={`${dmSans.className} text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1.5`} style={{ background:'rgba(210,83,128,0.08)', color:C.pink }}>
-                    "{filters.search}"<button onClick={()=>setF('search','')} className="bg-transparent border-none cursor-pointer text-[13px] leading-none p-0" style={{ color:C.pink }}>×</button>
-                  </span>
-                )}
-                {filters.area && (
-                  <span className={`${dmSans.className} text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1.5`} style={{ background:'rgba(224,142,109,0.1)', color:C.coral }}>
-                    <MapPin size={9}/> {filters.area}<button onClick={()=>setF('area','')} className="bg-transparent border-none cursor-pointer text-[13px] leading-none p-0" style={{ color:C.coral }}>×</button>
-                  </span>
-                )}
-                {filters.specialization && (
-                  <span className={`${dmSans.className} text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1.5`} style={{ background:'rgba(210,83,128,0.08)', color:C.pink }}>
-                    {filters.specialization}<button onClick={()=>setF('specialization','')} className="bg-transparent border-none cursor-pointer text-[13px] leading-none p-0" style={{ color:C.pink }}>×</button>
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-
-          {loading
-            ? Array.from({length:5}).map((_,i)=><SkeletonRow key={i}/>)
-            : doctors.length===0
-            ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="text-5xl mb-4">🔍</div>
-                <h3 className={cormorant.className} style={{ fontSize:24, color:C.ink, marginBottom:8 }}>No doctors found</h3>
-                <p className={`${dmSans.className} text-sm font-light mb-6`} style={{ color:C.mu }}>
-                  Try adjusting your filters or search terms.<br/>
-                  <span style={{ fontSize:11, color:C.mu, opacity:0.7 }}>Check browser console for detailed diagnostics.</span>
-                </p>
-                <button onClick={clearAll} className={`${dmSans.className} text-white border-none rounded-xl px-7 py-3 text-[13px] font-semibold cursor-pointer`}
-                  style={{ background:`linear-gradient(135deg,${C.pink},${C.coral})`, boxShadow:'0 4px 16px rgba(210,83,128,0.25)' }}>
-                  Clear All Filters
-                </button>
-              </div>
-            )
-            : doctors.map((doc,i)=>(
-              <div key={doc._id} className="dre" style={{ animationDelay:`${i*0.04}s`, opacity:0 }}>
-                <DoctorRow doctor={doc} saved={savedIds.includes(doc._id)} onSave={handleSave}/>
-              </div>
-            ))
-          }
-
-          {/* {pages>1 && (
-            <div className="flex items-center justify-center gap-1.5 mt-8">
-              <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}
-                className="w-9 h-9 rounded-[9px] flex items-center justify-center bg-white border transition-all"
-                style={{ color:C.pink, borderColor:C.bd, cursor:page===1?'not-allowed':'pointer', opacity:page===1?0.4:1 }}>
-                <ChevronLeft size={16}/>
-              </button>
-              {Array.from({length:pages}).map((_,i)=>{
-                const n=i+1
-                if(n!==1&&n!==pages&&Math.abs(n-page)>2) return (n===2||n===pages-1)?<span key={n} className={`${dmSans.className} px-1 text-sm`} style={{ color:C.mu }}>…</span>:null
-                const act=n===page
-                return (
-                  <button key={n} onClick={()=>setPage(n)} className={`${dmSans.className} w-9 h-9 rounded-[9px] flex items-center justify-center text-[13px] border transition-all`}
-                    style={{ fontWeight:act?600:400, background:act?`linear-gradient(135deg,${C.pink},${C.coral})`:'#fff', color:act?'#fff':C.muD, borderColor:act?'transparent':C.bd, cursor:'pointer', boxShadow:act?'0 3px 12px rgba(210,83,128,0.25)':'none' }}>
-                    {n}
-                  </button>
                 )
-              })}
-              <button onClick={()=>setPage(p=>Math.min(pages,p+1))} disabled={page===pages}
-                className="w-9 h-9 rounded-[9px] flex items-center justify-center bg-white border transition-all"
-                style={{ color:C.pink, borderColor:C.bd, cursor:page===pages?'not-allowed':'pointer', opacity:page===pages?0.4:1 }}>
-                <ChevronRight size={16}/>
-              </button>
+                : doctors.map((doc)=>(
+                  <div key={doc._id} className="dre">
+                    <DoctorRow doctor={doc} saved={savedIds.includes(doc._id)} onSave={handleSave}/>
+                  </div>
+                ))
+              }
             </div>
-          )} */}
+
+            {/* ── MOBILE: 2-column card grid (< 768px) ── */}
+            <div className="block sm:hidden">
+              {loading
+                ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    {Array.from({length:4}).map((_,i)=><SkeletonCard key={i}/>)}
+                  </div>
+                )
+                : doctors.length===0
+                ? (
+                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="text-4xl mb-3">🔍</div>
+                    <h3 className={cormorant.className} style={{ fontSize:20, color:C.ink, marginBottom:6 }}>No doctors found</h3>
+                    <p className={`${dmSans.className} text-xs font-light mb-5`} style={{ color:C.mu }}>Try adjusting your filters.</p>
+                    <button onClick={clearAll} className={`${dmSans.className} text-white border-none rounded-xl px-6 py-2.5 text-xs font-semibold cursor-pointer`}
+                      style={{ background:`linear-gradient(135deg,${C.pink},${C.coral})` }}>
+                      Clear Filters
+                    </button>
+                  </div>
+                )
+                : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {doctors.map((doc)=>(
+                      <div key={doc._id} className="dre">
+                        <DoctorCard doctor={doc} saved={savedIds.includes(doc._id)} onSave={handleSave}/>
+                      </div>
+                    ))}
+                  </div>
+                )
+              }
+            </div>
+
+            {/* Pagination — keep commented as original */}
+            {/* {pages>1 && ( ... )} */}
+
+          </div>
         </div>
       </div>
     </div>
