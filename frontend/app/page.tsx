@@ -286,22 +286,6 @@ export default async function HomePage() {
         {/* ══ FEATURED DOCTORS ══ */}
         <FeaturedDoctors doctors={doctors} />
 
-        {/* Divider */}
-        <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(210,83,128,0.12), transparent)' }} />
-
-        {/* ══ WHY HUNTLY ══ */}
-        <WhyChooseUs />
-
-        {/* ══ HOW IT WORKS ══ */}
-        <HowItWorks />
-
-
-        {/* ══════════════════════════════════════════
-            CTA SECTION
-            Mobile:  Full-bleed gradient card, centred, minimal copy + 3 stat pills
-            Tablet:  2-col card inside wrapper
-            Desktop: Original layout, unchanged
-        ══════════════════════════════════════════ */}
 
         {/* ── MOBILE CTA ── */}
         <section className="cta-mobile sm:hidden">
@@ -477,6 +461,25 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(210,83,128,0.12), transparent)' }} />
+
+        {/* ══ WHY HUNTLY ══ */}
+        {/* <WhyChooseUs /> */}
+
+        {/* ══ HOW IT WORKS ══ */}
+        <HowItWorks />
+
+
+        {/* ══════════════════════════════════════════
+            CTA SECTION
+            Mobile:  Full-bleed gradient card, centred, minimal copy + 3 stat pills
+            Tablet:  2-col card inside wrapper
+            Desktop: Original layout, unchanged
+        ══════════════════════════════════════════ */}
+
+        
 
       </div>
     </>
