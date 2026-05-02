@@ -81,7 +81,7 @@ const TABS = [
   { k:'ov', emoji:'📋', l:'Overview'  },
   { k:'cl', emoji:'🩺', l:'Clinical'  },
   { k:'rv', emoji:'⭐', l:'Reviews'   },
-  { k:'bk', emoji:'📅', l:'Book'      },
+  // { k:'bk', emoji:'📅', l:'Book'      },
 ]
 
 export default function DoctorProfilePage() {
@@ -417,7 +417,7 @@ export default function DoctorProfilePage() {
       )}
 
       {/* ── BOOK ── */}
-      {tab==='bk' && (
+      {/* {tab==='bk' && (
         <form onSubmit={doBook} className="flex flex-col gap-5">
           <div className="text-[22px] font-semibold text-[#2A1520]"
             style={{ fontFamily:'var(--font-cormorant)' }}>Book an Appointment</div>
@@ -473,7 +473,7 @@ export default function DoctorProfilePage() {
             {sbB?'Booking…':'Confirm Appointment'}
           </button>
         </form>
-      )}
+      )} */}
     </div>
   )
 
@@ -612,7 +612,7 @@ export default function DoctorProfilePage() {
               { icon:<TrendingUp size={13} style={{ color:C.pink }}/>, val:doc.experience?`${doc.experience}y`:'—', label:'Exp' },
               { icon:<Star size={13} style={{ color:C.peach }}/>, val:doc.averageRating.toFixed(1), label:'Rating' },
               { icon:<Users size={13} style={{ color:C.coral }}/>, val:String(doc.totalReviews||0), label:'Reviews' },
-              { icon:<Calendar size={13} style={{ color:C.muD }}/>, val:`${doc.totalBookings||0}+`, label:'Bookings' },
+              // { icon:<Calendar size={13} style={{ color:C.muD }}/>, val:`${doc.totalBookings||0}+`, label:'Bookings' },
             ].map(s => (
               <div key={s.label} className="flex flex-col items-center justify-center py-3 px-1 bg-white rounded-[14px] border border-[#D25380]/10 text-center shadow-[0_1px_8px_rgba(210,83,128,0.06)]">
                 <div className="mb-1">{s.icon}</div>
@@ -685,7 +685,7 @@ export default function DoctorProfilePage() {
               { icon:<TrendingUp size={15} style={{ color:C.pink }}/>, val:doc.experience?`${doc.experience} yrs`:'—', label:'Experience' },
               { icon:<Star size={15} style={{ color:C.peach }}/>, val:`${doc.averageRating.toFixed(1)}/5`, label:'Rating' },
               { icon:<Users size={15} style={{ color:C.coral }}/>, val:String(doc.totalReviews||0), label:'Reviews' },
-              { icon:<Calendar size={15} style={{ color:C.muD }}/>, val:`${doc.totalBookings||0}+`, label:'Bookings' },
+              // { icon:<Calendar size={15} style={{ color:C.muD }}/>, val:`${doc.totalBookings||0}+`, label:'Bookings' },
             ].map(s => (
               <div key={s.label} className="flex flex-col items-center justify-center py-4 px-2 bg-white rounded-[14px] border border-[#D25380]/10 text-center shadow-[0_1px_8px_rgba(210,83,128,0.06)]">
                 <div className="mb-1.5">{s.icon}</div>
@@ -754,7 +754,7 @@ export default function DoctorProfilePage() {
                   { icon:<TrendingUp size={15} style={{ color:C.pink }}/>,  val:doc.experience?`${doc.experience} yrs`:'—', label:'Experience' },
                   { icon:<Star       size={15} style={{ color:C.peach }}/>, val:`${doc.averageRating.toFixed(1)}/5`,         label:'Rating'     },
                   { icon:<Users      size={15} style={{ color:C.coral }}/>, val:String(doc.totalReviews||0),                 label:'Reviews'    },
-                  { icon:<Calendar   size={15} style={{ color:C.muD  }}/>, val:`${doc.totalBookings||0}+`,                  label:'Bookings'   },
+                  // { icon:<Calendar   size={15} style={{ color:C.muD  }}/>, val:`${doc.totalBookings||0}+`,                  label:'Bookings'   },
                 ].map(s => (
                   <div key={s.label} className="flex-1 flex flex-col items-center justify-center py-4 px-2 bg-white rounded-[14px] border border-[#D25380]/10 text-center shadow-[0_1px_8px_rgba(210,83,128,0.06)]">
                     <div className="mb-1.5">{s.icon}</div>
@@ -797,10 +797,10 @@ export default function DoctorProfilePage() {
                   )}
                 </div>
                 <div className="p-4 flex flex-col gap-2 bg-white">
-                  <button onClick={()=>setTab('bk')} className={BTN_PRI}
+                  {/* <button onClick={()=>setTab('bk')} className={BTN_PRI}
                     style={{ background:'linear-gradient(135deg,#D25380,#E08E6D)', boxShadow:'0 4px 16px rgba(210,83,128,0.25)' }}>
                     <Calendar size={15}/> Book Appointment
-                  </button>
+                  </button> */}
                   {doc.phone && <a href={`tel:${doc.phone}`} className={BTN_OUT}><Phone size={13}/> Call Clinic</a>}
                   {doc.googleMapsLink && (
                     <a href={doc.googleMapsLink} target="_blank" rel="noopener noreferrer"

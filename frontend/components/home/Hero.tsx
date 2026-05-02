@@ -214,7 +214,7 @@ export default function HuntlyHero({ doctors }: HeroProps) {
           style={{ background: 'rgba(210,83,128,0.07)', border: '1px solid rgba(210,83,128,0.15)' }}>
           <BadgeCheck size={10} style={{ color: '#D25380' }} />
           <span style={{ fontFamily: 'var(--font-dm)', fontSize: 9, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#D25380' }}>
-            India's Premium Doctor Network
+            Jaipur's Premium Doctor Network
           </span>
         </div>
 
@@ -363,7 +363,7 @@ export default function HuntlyHero({ doctors }: HeroProps) {
               style={{ background: 'rgba(210,83,128,0.07)', border: '1px solid rgba(210,83,128,0.15)' }}>
               <BadgeCheck size={10} style={{ color: '#D25380' }} />
               <span style={{ fontFamily: 'var(--font-dm)', fontSize: 9, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#D25380' }}>
-                India's Premium Doctor Network
+                Jaipur's Premium Doctor Network
               </span>
             </div>
 
@@ -524,7 +524,7 @@ export default function HuntlyHero({ doctors }: HeroProps) {
               style={{ background: 'rgba(210,83,128,0.07)', border: '1px solid rgba(210,83,128,0.15)' }}>
               <BadgeCheck size={11} style={{ color: '#D25380' }} />
               <span style={{ fontFamily: 'var(--font-dm)', fontSize: 10, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#D25380' }}>
-                India's Premium Doctor Network
+                Jaipur's Premium Doctor Network
               </span>
             </div>
 
