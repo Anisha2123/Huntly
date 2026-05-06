@@ -32,19 +32,17 @@ export default function RegisterPage() {
   const [show,    setShow]    = useState(false)
   const [loading, setLoading] = useState(false)
   const [otp,     setOtp]     = useState(['', '', '', '', '', ''])
-  const [resendCd,setResendCd]= useState(0)   // seconds remaining
+  const [resendCd,setResendCd]= useState(0)
   const otpRefs = useRef<(HTMLInputElement | null)[]>([])
   const { setAuth } = useAuthStore()
   const router = useRouter()
 
-  /* countdown timer for resend */
   useEffect(() => {
     if (resendCd <= 0) return
     const t = setTimeout(() => setResendCd(c => c - 1), 1000)
     return () => clearTimeout(t)
   }, [resendCd])
 
-  /* ── Step 1: send OTP ── */
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.name || !form.email || !form.password || !form.phone) {
@@ -65,7 +63,6 @@ export default function RegisterPage() {
     }
   }
 
-  /* ── OTP input helpers ── */
   const handleOtpChange = (i: number, val: string) => {
     if (!/^\d*$/.test(val)) return
     const next = [...otp]
@@ -86,7 +83,6 @@ export default function RegisterPage() {
     }
   }
 
-  /* ── Step 2: verify OTP ── */
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault()
     const code = otp.join('')
@@ -106,7 +102,6 @@ export default function RegisterPage() {
     }
   }
 
-  /* ── Resend ── */
   const handleResend = async () => {
     if (resendCd > 0) return
     try {
@@ -123,6 +118,19 @@ export default function RegisterPage() {
   return (
     <div className={`${playfair.variable} ${outfit.variable} min-h-screen pt-16 flex items-center justify-center px-4`}
       style={{ fontFamily:'var(--font-outfit)', background:'linear-gradient(135deg, #FFFAF4 0%, #fff0e8 100%)' }}>
+
+      <style>{`
+        .otp-box {
+          /* fluid size: shrinks on narrow screens, caps at 56px */
+          width: clamp(36px, calc((100vw - 128px) / 6), 56px);
+          height: clamp(44px, 13vw, 56px);
+          min-width: 0;
+          flex-shrink: 1;
+        }
+        @media (max-width: 400px) {
+          .otp-gap { gap: 6px !important; }
+        }
+      `}</style>
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
 
@@ -164,7 +172,7 @@ export default function RegisterPage() {
         </div>
 
         {/* ── Form card ── */}
-        <div className="bg-white rounded-3xl p-8 border border-[#D25380]/10
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#D25380]/10
           shadow-[0_8px_40px_rgba(210,83,128,0.12),0_2px_12px_rgba(210,83,128,0.07)]">
 
           {step === 'form' ? (
@@ -178,11 +186,8 @@ export default function RegisterPage() {
               </p>
 
               <form onSubmit={handleSendOtp} className="space-y-4">
-                {/* Name */}
                 <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-1.5">
-                    Full Name *
-                  </label>
+                  <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-1.5">Full Name *</label>
                   <input type="text" value={form.name}
                     onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                     placeholder="Your full name"
@@ -190,11 +195,8 @@ export default function RegisterPage() {
                     required />
                 </div>
 
-                {/* Email */}
                 <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-1.5">
-                    Email Address *
-                  </label>
+                  <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-1.5">Email Address *</label>
                   <input type="email" value={form.email}
                     onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
                     placeholder="you@example.com"
@@ -202,11 +204,8 @@ export default function RegisterPage() {
                     required />
                 </div>
 
-                {/* Phone — required */}
                 <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-1.5">
-                    Phone Number *
-                  </label>
+                  <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-1.5">Phone Number *</label>
                   <input type="tel" value={form.phone}
                     onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
                     placeholder="+91 98765 43210"
@@ -214,11 +213,8 @@ export default function RegisterPage() {
                     required />
                 </div>
 
-                {/* Password */}
                 <div>
-                  <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-1.5">
-                    Password *
-                  </label>
+                  <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-1.5">Password *</label>
                   <div className="relative">
                     <input
                       type={show ? 'text' : 'password'}
@@ -259,18 +255,23 @@ export default function RegisterPage() {
               <h1 className="text-2xl font-semibold text-[#2A1520] mb-1" style={{ fontFamily:'var(--font-playfair)' }}>
                 Check your email
               </h1>
-              <p className="text-[#AA8090] text-sm mb-7">
+              <p className="text-[#AA8090] text-sm mb-7 break-all">
                 We sent a 6-digit code to{' '}
                 <span className="font-semibold text-[#2A1520]">{form.email}</span>
               </p>
 
               <form onSubmit={handleVerify} className="space-y-6">
-                {/* OTP boxes */}
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#AA8090] mb-3">
                     Verification Code
                   </label>
-                  <div className="flex gap-2.5" onPaste={handleOtpPaste}>
+
+                  {/* ── OTP boxes — fluid, never overflow ── */}
+                  <div
+                    className="otp-gap"
+                    style={{ display:'flex', gap:10, width:'100%' }}
+                    onPaste={handleOtpPaste}
+                  >
                     {otp.map((digit, i) => (
                       <input
                         key={i}
@@ -281,13 +282,22 @@ export default function RegisterPage() {
                         value={digit}
                         onChange={e => handleOtpChange(i, e.target.value)}
                         onKeyDown={e => handleOtpKey(i, e)}
-                        className={[
-                          'flex-1 h-14 text-center text-xl font-bold rounded-xl border-2 outline-none transition-all',
-                          'bg-[#FFFAF4] text-[#2A1520]',
-                          digit
-                            ? 'border-[#D25380] bg-[#D25380]/[0.04] shadow-[0_0_0_3px_rgba(210,83,128,0.1)]'
-                            : 'border-[#D25380]/20 focus:border-[#D25380] focus:shadow-[0_0_0_3px_rgba(210,83,128,0.1)]',
-                        ].join(' ')}
+                        className="otp-box"
+                        style={{
+                          textAlign: 'center',
+                          fontSize: 'clamp(16px, 4vw, 22px)',
+                          fontWeight: 700,
+                          borderRadius: 12,
+                          border: digit
+                            ? '2px solid #D25380'
+                            : '2px solid rgba(210,83,128,0.2)',
+                          background: digit ? 'rgba(210,83,128,0.04)' : '#FFFAF4',
+                          color: '#2A1520',
+                          outline: 'none',
+                          boxShadow: digit ? '0 0 0 3px rgba(210,83,128,0.1)' : 'none',
+                          transition: 'all .15s',
+                          fontFamily: 'var(--font-outfit)',
+                        }}
                       />
                     ))}
                   </div>
@@ -302,7 +312,6 @@ export default function RegisterPage() {
                 </button>
               </form>
 
-              {/* Resend */}
               <div className="mt-5 text-center">
                 {resendCd > 0 ? (
                   <p className="text-sm text-[#AA8090]">
