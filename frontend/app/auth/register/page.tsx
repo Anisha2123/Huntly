@@ -135,7 +135,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
 
         {/* ── Left panel ── */}
-        <div className="flex flex-col justify-center py-8">
+        <div className="hidden md:flex flex-col justify-center py-8">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-[0_4px_16px_rgba(210,83,128,0.25)]"
             style={{ background:'linear-gradient(135deg,#D25380,#E08E6D)' }}>
             <span className="text-2xl font-bold text-white" style={{ fontFamily:'var(--font-playfair)' }}>M</span>
