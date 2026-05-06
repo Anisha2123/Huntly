@@ -280,7 +280,7 @@ export default function Navbar() {
           Slides in from right, overlays everything
       ══════════════════════════════════════════ */}
       {open && (
-        <div className={`${cormorant.variable} ${dmSans.variable} fixed inset-0 z-40 lg:hidden`} style={{ fontFamily: 'var(--font-dm)' }}>
+        <div className={`${cormorant.variable} ${dmSans.variable} fixed inset-0 z-50 lg:hidden`} style={{ fontFamily: 'var(--font-dm)' }}>
 
           {/* Backdrop */}
           <div
@@ -307,11 +307,11 @@ export default function Navbar() {
                   Hunt<em style={{ fontStyle: 'italic', color: '#D25380' }}>ly</em>
                 </span>
               </Link>
-              {/* <button
+              <button
                 onClick={() => setOpen(false)}
                 style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(210,83,128,0.07)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D25380' }}>
                 <X size={16} />
-              </button> */}
+              </button>
             </div>
 
             {/* Location hint */}

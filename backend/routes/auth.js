@@ -6,6 +6,10 @@ const { Resend } = require('resend');          // npm install resend
 const User    = require('../models/User');
 const { protect } = require('../middleware/auth');
 
+const nodemailer = require('nodemailer');
+
+
+
 const router = express.Router();
 const resend = new Resend(process.env.RESEND_API_KEY); // add to .env
 
@@ -19,17 +23,30 @@ const otpStore = new Map();
 
 const generateOtp = () => crypto.randomInt(100000, 999999).toString();
 
+// const nodemailer = require('nodemailer');  // npm install nodemailer
+
+// Replace the resend instance with this transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,  // App Password, not your real password
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+// Replace sendOtpEmail with this:
 const sendOtpEmail = async (email, otp, name) => {
-  try
-  {
-  const response = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: "noirsevendigitalsolutions@gmail.com",
-      subject: `${otp} — Your Huntly verification code`,
+  await transporter.sendMail({
+    from: `"Huntly" <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: `${otp} — Your MedList verification code`,
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#FFFAF4;border-radius:16px">
-        <div style="width:44px;height:44px;background:#D25380;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px">
-          <span style="color:#fff;font-size:20px;font-weight:700">M</span>
+        <div style="width:44px;height:44px;background:#D25380;border-radius:12px;margin-bottom:20px">
+          <span style="color:#fff;font-size:20px;font-weight:700;padding:10px">M</span>
         </div>
         <h2 style="margin:0 0 8px;color:#2A1520;font-size:22px">Hi ${name || 'there'} 👋</h2>
         <p style="color:#7A4A58;margin:0 0 24px;line-height:1.6">
@@ -44,11 +61,7 @@ const sendOtpEmail = async (email, otp, name) => {
       </div>
     `,
   });
-    console.log("Email sent:", response);
-  } catch (error) {
-    console.error("Resend error:", error);
-    throw error;
-}
+  console.log(`✉️  OTP sent to ${email}`);
 };
 
 /* ─────────────────────────────────────────────────────────
