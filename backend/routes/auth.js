@@ -2,16 +2,14 @@ const express = require('express');
 const jwt     = require('jsonwebtoken');
 const crypto  = require('crypto');
 const { body, validationResult } = require('express-validator');
-const { Resend } = require('resend');          // npm install resend
+const axios = require('axios');
 const User    = require('../models/User');
 const { protect } = require('../middleware/auth');
-
-const nodemailer = require('nodemailer');
 
 
 
 const router = express.Router();
-const resend = new Resend(process.env.RESEND_API_KEY); // add to .env
+
 
 /* ── helpers ────────────────────────────────────────────── */
 const signToken = (id) =>
@@ -23,47 +21,70 @@ const otpStore = new Map();
 
 const generateOtp = () => crypto.randomInt(100000, 999999).toString();
 
-// const nodemailer = require('nodemailer');  // npm install nodemailer
-
-// Replace the resend instance with this transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,  // App Password, not your real password
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
 
 // Replace sendOtpEmail with this:
 const sendOtpEmail = async (email, otp, name) => {
-  await transporter.sendMail({
-    from: `"Huntly" <${process.env.GMAIL_USER}>`,
-    to: email,
-    subject: `${otp} — Your MedList verification code`,
-    html: `
-      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#FFFAF4;border-radius:16px">
-        <div style="width:44px;height:44px;background:#D25380;border-radius:12px;margin-bottom:20px">
-          <span style="color:#fff;font-size:20px;font-weight:700;padding:10px">M</span>
-        </div>
-        <h2 style="margin:0 0 8px;color:#2A1520;font-size:22px">Hi ${name || 'there'} 👋</h2>
-        <p style="color:#7A4A58;margin:0 0 24px;line-height:1.6">
-          Use the code below to verify your email. It expires in <strong>10 minutes</strong>.
-        </p>
-        <div style="background:#fff;border:1.5px solid rgba(210,83,128,0.2);border-radius:12px;padding:20px;text-align:center;margin-bottom:24px">
-          <span style="font-size:36px;font-weight:700;color:#D25380;letter-spacing:8px">${otp}</span>
-        </div>
-        <p style="color:#AA8090;font-size:12px;margin:0">
-          If you didn't request this, you can safely ignore this email.
-        </p>
-      </div>
-    `,
-  });
-  console.log(`✉️  OTP sent to ${email}`);
-};
 
+  await axios.post(
+    'https://api.brevo.com/v3/smtp/email',
+
+    {
+      sender: {
+        name: 'Huntly',
+        email: process.env.BREVO_USER,
+      },
+
+      to: [
+        {
+          email: email,
+        },
+      ],
+
+      subject: `${otp} — Your Huntly verification code`,
+
+      htmlContent: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#FFFAF4;border-radius:16px">
+
+          <div style="width:44px;height:44px;background:#D25380;border-radius:12px;margin-bottom:20px">
+            <span style="color:#fff;font-size:20px;font-weight:700;padding:10px">H</span>
+          </div>
+
+          <h2 style="margin:0 0 8px;color:#2A1520;font-size:22px">
+            Hi ${name || 'there'} 👋
+          </h2>
+
+          <p style="color:#7A4A58;margin:0 0 24px;line-height:1.6">
+            Use the code below to verify your email.
+            It expires in <strong>10 minutes</strong>.
+          </p>
+
+          <div style="background:#fff;border:1.5px solid rgba(210,83,128,0.2);border-radius:12px;padding:20px;text-align:center;margin-bottom:24px">
+
+            <span style="font-size:36px;font-weight:700;color:#D25380;letter-spacing:8px">
+              ${otp}
+            </span>
+
+          </div>
+
+          <p style="color:#AA8090;font-size:12px;margin:0">
+            If you didn't request this, you can safely ignore this email.
+          </p>
+
+        </div>
+      `,
+    },
+
+    {
+      headers: {
+        accept: 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json',
+      },
+    }
+  );
+
+  console.log(`✉️ OTP sent to ${email}`);
+};
 /* ─────────────────────────────────────────────────────────
    POST /api/auth/send-otp
    Step 1 — collect details, store temporarily, email OTP
