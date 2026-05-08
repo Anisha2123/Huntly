@@ -327,14 +327,14 @@ export default function HuntlyHero({ doctors }: HeroProps) {
         </div>
 
         {/* Stats strip */}
-        <div className="m-r7 flex items-center gap-3 mb-8">
+        {/* <div className="m-r7 flex items-center gap-3 mb-8">
           {[{ val: '1,200+', label: 'Doctors' }, { val: '4.8★', label: 'Rating' }, { val: '50K+', label: 'Patients' }].map(s => (
             <div key={s.label} className="m-stat-pill">
               <div style={{ fontFamily: 'var(--font-cormorant), serif', fontSize: 20, fontWeight: 600, color: '#D25380', lineHeight: 1 }}>{s.val}</div>
               <div style={{ fontFamily: 'var(--font-dm)', fontSize: 9, fontWeight: 400, color: 'rgba(42,21,32,0.38)', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 3 }}>{s.label}</div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
 
@@ -406,7 +406,7 @@ export default function HuntlyHero({ doctors }: HeroProps) {
             </div>
 
             {/* Stats */}
-            <div className="t-r6 flex items-center gap-6 pt-6"
+            {/* <div className="t-r6 flex items-center gap-6 pt-6"
               style={{ borderTop: '1px solid rgba(210,83,128,0.08)' }}>
               {[{ val: '1,200+', label: 'Doctors' }, { val: '4.8★', label: 'Avg. Rating' }, { val: '50K+', label: 'Patients' }].map(s => (
                 <div key={s.label}>
@@ -414,7 +414,7 @@ export default function HuntlyHero({ doctors }: HeroProps) {
                   <div style={{ fontFamily: 'var(--font-dm)', fontSize: 9, fontWeight: 400, color: 'rgba(42,21,32,0.38)', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 3 }}>{s.label}</div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* ── Tablet Right: cards stacked compactly ── */}
@@ -556,7 +556,7 @@ export default function HuntlyHero({ doctors }: HeroProps) {
               ))}
             </div>
 
-            <div className="h-r6 flex items-center gap-8 mt-10 pt-8"
+            {/* <div className="h-r6 flex items-center gap-8 mt-10 pt-8"
               style={{ borderTop: '1px solid rgba(210,83,128,0.08)' }}>
               {[{ val: '1,200+', label: 'Verified Doctors' }, { val: '4.8★', label: 'Avg. Rating' }, { val: '50K+', label: 'Patients Served' }].map(s => (
                 <div key={s.label}>
@@ -564,7 +564,7 @@ export default function HuntlyHero({ doctors }: HeroProps) {
                   <div style={{ fontFamily: 'var(--font-dm)', fontSize: 10, fontWeight: 400, color: 'rgba(42,21,32,0.38)', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 4 }}>{s.label}</div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* ── RIGHT ── */}

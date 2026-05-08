@@ -234,11 +234,11 @@ export default async function HomePage() {
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
             {/* Mobile: horizontal scroll */}
-            <div className="stats-scroll sm:hidden fu1">
+            {/* <div className="flex sm:hidden stats-scroll">
               {[
                 { value: `${stats.doctors}+`,    label: 'Verified Doctors' },
                 { value: `${stats.users}+`,      label: 'Happy Patients' },
-                { value: `${stats.reviews}+`,    label: 'Reviews' },
+                // { value: `${stats.reviews}+`,    label: 'Reviews' },
                 { value: `${stats.categories}+`, label: 'Specialities' },
               ].map((s) => (
                 <div key={s.label} className="m-stat-item">
@@ -246,14 +246,14 @@ export default async function HomePage() {
                   <div style={{ fontSize: 10, color: '#7A3A50', letterSpacing: '0.06em', textAlign: 'center', whiteSpace: 'nowrap' }}>{s.label}</div>
                 </div>
               ))}
-            </div>
+            </div> */}
 
             {/* Tablet: 2×2 grid */}
             <div className="hidden sm:grid lg:hidden stats-grid-tablet fu1" style={{ padding: '0 32px' }}>
               {[
                 { value: `${stats.doctors}+`,    label: 'Verified Doctors' },
                 { value: `${stats.users}+`,      label: 'Happy Patients' },
-                { value: `${stats.reviews}+`,    label: 'Verified Reviews' },
+                // { value: `${stats.reviews}+`,    label: 'Verified Reviews' },
                 { value: `${stats.categories}+`, label: 'Specializations' },
               ].map((s) => (
                 <div key={s.label} className="m-stat-item">
@@ -268,7 +268,7 @@ export default async function HomePage() {
               {[
                 { value: `${stats.doctors}+`,    label: 'Verified Doctors' },
                 { value: `${stats.users}+`,      label: 'Happy Patients' },
-                { value: `${stats.reviews}+`,    label: 'Verified Reviews' },
+                // { value: `${stats.reviews}+`,    label: 'Verified Reviews' },
                 { value: `${stats.categories}+`, label: 'Specializations' },
               ].map((s) => (
                 <div key={s.label} className="m-stat-item" style={{ textAlign: 'center' }}>
@@ -469,7 +469,7 @@ export default async function HomePage() {
         {/* <WhyChooseUs /> */}
 
         {/* ══ HOW IT WORKS ══ */}
-        <HowItWorks />
+        {/* <HowItWorks /> */}
 
 
         {/* ══════════════════════════════════════════

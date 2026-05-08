@@ -60,22 +60,37 @@ app.use('/api/categories', categoryRouter);
 app.use('/api/locations', locationRouter);
 
 // Stats endpoint
+// Stats endpoint
 app.get('/api/stats', async (req, res) => {
   try {
     const Doctor = require('./models/Doctor');
     const Review = require('./models/Review');
-    const User = require('./models/User');
-    const Category = require('./models/Category');
+    const User   = require('./models/User');
 
-    const [doctors, reviews, users, categories] = await Promise.all([
+    const [doctors, reviews, users, specializationNames] = await Promise.all([
+      // Count active doctors
       Doctor.countDocuments({ isActive: true }),
+
+      // Count approved reviews
       Review.countDocuments({ isApproved: true }),
+
+      // Count patient users
       User.countDocuments({ role: 'patient' }),
-      Category.countDocuments({ isActive: true }),
+
+      // Count DISTINCT specialization names from the embedded array in doctors
+      // This is the correct source — not a separate Category collection
+      Doctor.distinct('specializations.name', { isActive: true }),
     ]);
 
-    res.json({ success: true, stats: { doctors, reviews, users, categories } });
+    // Filter out any null/empty values before counting
+    const categories = specializationNames.filter(Boolean).length;
+
+    res.json({
+      success: true,
+      stats: { doctors, reviews, users, categories },
+    });
   } catch (err) {
+    console.error('[STATS]', err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 });
