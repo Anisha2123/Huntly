@@ -104,7 +104,7 @@ export default function DashboardPage() {
         <div className="card overflow-hidden">
           <div className="flex border-b border-gray-100">
             {([
-              { key: 'bookings', label: '📅 My Bookings' },
+              // { key: 'bookings', label: '📅 My Bookings' },
               { key: 'saved',    label: '❤️ Saved Doctors' },
               { key: 'profile',  label: '👤 Profile' },
             ] as const).map(t => (

@@ -212,7 +212,7 @@ export default function Navbar() {
                     </div>
                     {[
                       { href: '/dashboard',          icon: <User size={13}/>,  label: 'My Dashboard' },
-                      { href: '/dashboard/bookings', icon: <Heart size={13}/>, label: 'My Bookings'  },
+                      // { href: '/dashboard/bookings', icon: <Heart size={13}/>, label: 'My Bookings'  },
                     ].map(item => (
                       <Link key={item.href} href={item.href} onClick={() => setProfileOpen(false)}
                         className="flex items-center gap-2.5 transition-colors"
@@ -366,7 +366,7 @@ export default function Navbar() {
                   <div className="nav-link-5" style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 8 }}>
                     {[
                       { href: '/dashboard',          icon: <User size={13}/>,  label: 'My Dashboard' },
-                      { href: '/dashboard/bookings', icon: <Heart size={13}/>, label: 'My Bookings'  },
+                      // { href: '/dashboard/bookings', icon: <Heart size={13}/>, label: 'My Bookings'  },
                     ].map(item => (
                       <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
                         style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'var(--font-dm)', fontSize: 13, fontWeight: 500, color: '#7A3A50', padding: '10px 14px', borderRadius: 12, textDecoration: 'none', transition: 'all .15s' }}
